@@ -49,7 +49,6 @@ public static class ShellInjectExtensions
     /// <param name="shell"></param>
     /// <param name="pageType"></param>
     /// <param name="parameter"></param>
-    /// <param name="animate"></param>
     /// <returns></returns>
     public static Task PopToAsync(this Shell shell, Type pageType, object? parameter = null)
     {
