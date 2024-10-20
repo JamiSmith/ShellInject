@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Sample.ViewModels"
+             xmlns:extensions="clr-namespace:ShellInject.Extensions;assembly=ShellInject"
+             extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:DetailsViewModel}"
+             extensions:ShellInjectPageExtensions.OnAppearingCommand="{Binding OnAppearingCommand}"
+             extensions:ShellInjectPageExtensions.OnDisappearingCommand="{Binding OnDisAppearingCommand}"
+             x:DataType="vm:DetailsViewModel"
+             Title="Details Page"
+             BackgroundColor="White"
+             x:Class="Sample.ContentPages.DetailsPage">
+    <ContentPage.Content>
+        <VerticalStackLayout
+            Spacing="16"
+            Padding="16">
+            <Label 
+                TextColor="Black"
+                FontSize="20"
+                HorizontalTextAlignment="Center"
+                Text="{Binding DataReceivedText}" />
+            <Button 
+                Text="Pop with Parameters"
+                Command="{Binding PopWithParameterCommand}" />
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -13,9 +13,22 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the pushed page.</param>
     /// <param name="animate">A boolean value indicating whether to animate the push operation. Default is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task PushAsync(this Shell shell, Type pageType, object? parameter, bool animate = true)
+    public static Task PushAsync(this Shell shell, Type pageType, object? parameter = null, bool animate = true)
     {
         return ShellInjectNavigation.Instance.PushAsync(shell, pageType, parameter, animate);
+    }
+    
+    /// <summary>
+    /// Resets the navigation and replaces the current main page
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="pageType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="animate"></param>
+    /// <returns></returns>
+    public static Task ReplaceAsync(this Shell shell, Type? pageType, object? parameter = null, bool animate = true)
+    {
+        return ShellInjectNavigation.Instance.ReplaceAsync(shell, pageType, parameter, animate);
     }
 
     /// <summary>
@@ -38,9 +51,9 @@ public static class ShellInjectExtensions
     /// <param name="parameter"></param>
     /// <param name="animate"></param>
     /// <returns></returns>
-    public static Task PopToAsync(this Shell shell, Type pageType, object? parameter = null, bool animate = true)
+    public static Task PopToAsync(this Shell shell, Type pageType, object? parameter = null)
     {
-        return ShellInjectNavigation.Instance.PopToAsync(shell, pageType, parameter, animate);
+        return ShellInjectNavigation.Instance.PopToAsync(shell, pageType, parameter);
     }
 
     /// <summary>

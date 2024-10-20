@@ -11,7 +11,7 @@ internal class ShellInjectNavigation
     /// <summary>
     /// Provides a singleton instance of the <see cref="ShellInjectNavigation"/> class for Shell-based navigation in a Maui application.
     /// </summary>
-    public static ShellInjectNavigation Instance { get; } = new();
+    internal static ShellInjectNavigation Instance { get; } = new();
 
     /// <summary>
     /// Represents the parameter passed during navigation in a Shell-based Maui application.
@@ -62,10 +62,10 @@ internal class ShellInjectNavigation
     /// Registers a route for a page type.
     /// </summary>
     /// <param name="pageType">The type of the page to register the route for.</param>
-    private void RegisterRoute(Type pageType)
+    private void RegisterRoute(Type pageType, string routeName)
     {
-        Routing.UnRegisterRoute(pageType.Name);
-        Routing.RegisterRoute(pageType.Name, pageType);
+        Routing.UnRegisterRoute(routeName);
+        Routing.RegisterRoute(routeName, pageType);
     }
 
     /// <summary>
@@ -100,12 +100,35 @@ internal class ShellInjectNavigation
     /// <param name="tParameter">The parameter for the page.</param>
     /// <param name="animate">True to animate the transition, false otherwise. Default is true.</param>
     /// <returns>A Task representing the ongoing asynchronous operation.</returns>
-    public async Task PushAsync<TParameter>(Shell shell, Type pageType, TParameter? tParameter, bool animate = true)
+    internal async Task PushAsync<TParameter>(Shell shell, Type pageType, TParameter? tParameter, bool animate = true)
     {
-        RegisterRoute(pageType);
+        RegisterRoute(pageType, pageType.Name);
         ShellSetup(shell);
         _navigationParameter = tParameter;
         await Shell.Current.GoToAsync(new ShellNavigationState(pageType.Name), animate);
+        ShellTeardown(shell);
+    }
+    
+    /// <summary>
+    ///  Resets the navigation and replaces the current main page
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="pageType"></param>
+    /// <param name="tParameter"></param>
+    /// <param name="animate"></param>
+    /// <typeparam name="TParameter"></typeparam>
+    internal async Task ReplaceAsync<TParameter>(Shell shell, Type? pageType, TParameter? tParameter, bool animate = true)
+    {
+        if (pageType == null)
+        {
+            return;
+        }
+        
+        RegisterRoute(pageType, pageType.Name);
+        ShellSetup(shell);
+        _navigationParameter = tParameter;
+        await Shell.Current.GoToAsync($"//{pageType.Name}", animate: animate);
+        await Task.Delay(500); // awaiting this so the page's binding context has time to set 
         ShellTeardown(shell);
     }
     
@@ -118,7 +141,7 @@ internal class ShellInjectNavigation
     /// <param name="tParameter">The parameter passed during navigation.</param>
     /// <param name="popToRootFirst">A flag indicating whether to pop to the root before changing the tab.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task ChangeTabAsync<TParameter>(Shell shell, int tabIndex, TParameter? tParameter, bool popToRootFirst)
+    internal async Task ChangeTabAsync<TParameter>(Shell shell, int tabIndex, TParameter? tParameter, bool popToRootFirst)
     {
         ShellSetup(shell);
 
@@ -152,7 +175,7 @@ internal class ShellInjectNavigation
     /// <param name="tResult">The result value.</param>
     /// <param name="animate">Whether to animate the pop transition. Default is true.</param>
     /// <returns>A task representing the asynchronous pop operation.</returns>
-    public async Task PopAsync<TResult>(Shell shell, TResult tResult, bool animate = true)
+    internal async Task PopAsync<TResult>(Shell shell, TResult tResult, bool animate = true)
     {
         ShellSetup(shell);
 
@@ -166,27 +189,45 @@ internal class ShellInjectNavigation
     /// <summary>
     /// Pops all pages from the navigation stack and returns to the root page.
     /// </summary>
-    public async Task PopToAsync(Shell shell, Type pageType, object? parameter = null, bool animate = true)
+    internal async Task PopToAsync<TResult>(Shell shell, Type pageType, TResult tResult)
     {
         var navigationStack = Shell.Current.Navigation.NavigationStack;
+
         if (navigationStack is { Count: > 0 })
         {
-            var firstPage = navigationStack[0];
-            foreach (var item in navigationStack)
+            // Iterate backwards through the navigation stack to find the target page type
+            for (int i = navigationStack.Count - 1; i >= 0; i--)
             {
-                if (item.GetType() == firstPage.GetType())
+                var item = navigationStack[i];
+            
+                // Skip null entries
+                if (item != null && item.GetType() == pageType)
                 {
-                    break;
-                }
-                if (item.GetType() == pageType)
-                {
-                    await Shell.Current.PopAsync(parameter, false);
-                    break;
-                }
+                    // Calculate how many pages to pop back (relative navigation)
+                    var pagesToPop = navigationStack.Count - 1 - i;
 
-                await Shell.Current.PopAsync(animate: false);
+                    // Pop the required number of pages back using relative routing
+                    for (int popCount = 0; popCount < pagesToPop; popCount++)
+                    {
+                        var animate = false;
+                        if (popCount == pagesToPop)
+                        {
+                            ShellSetup(shell);
+                            _isReverseNavigation = true;
+                            _navigationParameter = tResult;
+                            animate = true;
+                        }
+                        await Shell.Current.GoToAsync("..", animate);
+                        ShellTeardown(shell);
+                    }
+                    
+                    return;
+                }
             }
         }
+        
+        // If pageType not found, return to root
+        await Shell.Current.GoToAsync("//", true);
     }
 
     /// <summary>
@@ -197,7 +238,7 @@ internal class ShellInjectNavigation
     /// <param name="tResult">The result parameter to be passed during navigation.</param>
     /// <param name="animate">True to animate the navigation, false otherwise. Default is true.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public async Task PopToRootAsync<TResult>(Shell shell, TResult tResult, bool animate = true)
+    internal async Task PopToRootAsync<TResult>(Shell shell, TResult tResult, bool animate = true)
     {
         ShellSetup(shell);
 
@@ -219,30 +260,36 @@ internal class ShellInjectNavigation
     /// <param name="animateAllPages">A boolean value indicating whether to animate all pages during the navigation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="NullReferenceException">Thrown when the pageTypes parameter is null or empty.</exception>
-    public async Task PushMultiStackAsync<TParameter>(Shell shell, List<Type> pageTypes, TParameter tParameter, bool animate, bool animateAllPages)
+    internal async Task PushMultiStackAsync<TParameter>(Shell shell, List<Type> pageTypes, TParameter tParameter, bool animate, bool animateAllPages)
     {
-        ShellSetup(shell);
-
         if (pageTypes == null || pageTypes.Count == 0)
         {
             throw new NullReferenceException(ShellInjectConstants.NavigationStatesExceptionText);
         }
 
+        var navigationStack = Shell.Current.Navigation.NavigationStack.Where(p => p != null).ToList();
         var lastState = pageTypes.Last();
         foreach (var type in pageTypes)
         {
-            RegisterRoute(type);
+            var pageAlreadyOnStack = navigationStack.Any(p => p.GetType() == type);
+            if (!pageAlreadyOnStack && Shell.Current.Navigation.NavigationStack.Any(p => p == null && p?.GetType() == type))
+            {
+                pageAlreadyOnStack = true;
+            }
+
+            var route = pageAlreadyOnStack ? $"{type.Name}_{Guid.NewGuid()}" : type.Name;
+
+            RegisterRoute(type, route);
+
             if (type == lastState)
             {
+                ShellSetup(shell);
                 _navigationParameter = tParameter;
-                await Shell.Current.GoToAsync(new ShellNavigationState(type.Name), animate);
             }
-            else
-            {
-                await Shell.Current.GoToAsync(new ShellNavigationState(type.Name), animateAllPages);
-            }
+            
+            await Shell.Current.GoToAsync(route, type == lastState ? animate : animateAllPages);
         }
-        
+
         ShellTeardown(shell);
     }
 
@@ -255,7 +302,7 @@ internal class ShellInjectNavigation
     /// <param name="tParameter">The parameter to be passed to the view model associated with the page.</param>
     /// <param name="animate">Specifies whether the navigation transition should be animated or not. Default value is true.</param>
     /// <exception cref="NullReferenceException">Thrown if the given shell is null or the given page is null.</exception>
-    public async Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter, bool animate = true)
+    internal async Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter, bool animate = true)
     {
         ShellSetup(shell);
 
