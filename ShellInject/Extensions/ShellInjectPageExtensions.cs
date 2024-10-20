@@ -5,7 +5,7 @@ namespace ShellInject.Extensions;
 /// <summary>
 /// Provides attached properties for extending the functionality of Shell pages in a Maui application.
 /// </summary>
-internal static class ShellInjectPageExtensions
+public static class ShellInjectPageExtensions
 {
     // Attached Properties for ViewModel Type
 

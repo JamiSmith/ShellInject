@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Sample.ViewModels"
+             xmlns:extensions="clr-namespace:ShellInject.Extensions;assembly=ShellInject"
+             extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:MainViewModel}"
+             x:DataType="vm:MainViewModel"
+             Title="Main Page"
+             x:Class="Sample.MainPage">
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="8"
+            Padding="16">
+            <Button 
+                Text="Navigate to Details"
+                Command="{Binding ShowDetailsCommand}" />
+            <Label
+                HorizontalOptions="Center"
+                TextColor="Black"
+                FontSize="20"
+                HorizontalTextAlignment="Center"
+                Text="{Binding ReverseDataText}"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
