@@ -8,7 +8,7 @@ public static class ShellInjectMauiBuilderExtensions
     /// <summary>
     /// Represents the service provider used for dependency injection in ShellInject framework.
     /// </summary>
-    internal static IServiceProvider? ServiceProvider { get; private set; }
+    public static IServiceProvider? ServiceProvider { get; private set; }
 
     /// <summary>
     /// Uses ShellInject to configure the ShellInjectMauiBuilderExtensions in a Maui app.

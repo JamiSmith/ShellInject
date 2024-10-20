@@ -30,6 +30,7 @@ public partial class DetailsViewModel : BaseViewModel
             DataReceivedText = data;
         }
         
+        Console.Write("DataReceivedAsync");
         return Task.CompletedTask;
     }
 

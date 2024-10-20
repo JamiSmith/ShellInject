@@ -55,7 +55,7 @@ public static class ShellInjectPageExtensions
         return (Type)obj.GetValue(ViewModelTypeProperty);
     }
     
-    public static void SetViewModelType(BindableObject obj, Type value)
+    internal static void SetViewModelType(BindableObject obj, Type value)
     {
         obj.SetValue(ViewModelTypeProperty, value);
     }
@@ -88,7 +88,7 @@ public static class ShellInjectPageExtensions
     /// <param name="obj">The bindable object.</param>
     /// <param name="value">The ICommand to set as the OnAppearingCommand property.</param>
     /// </summary>
-    public static void SetOnAppearingCommand(BindableObject obj, ICommand value)
+    internal static void SetOnAppearingCommand(BindableObject obj, ICommand value)
     {
         obj.SetValue(OnAppearingCommandProperty, value);
     }
@@ -138,7 +138,7 @@ public static class ShellInjectPageExtensions
             null,
             propertyChanged: OnOnDisappearingCommandChanged);
 
-    public static ICommand GetOnDisappearingCommand(BindableObject obj)
+    internal static ICommand GetOnDisappearingCommand(BindableObject obj)
     {
         return (ICommand)obj.GetValue(OnDisappearingCommandProperty);
     }

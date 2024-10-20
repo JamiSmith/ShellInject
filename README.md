@@ -56,6 +56,7 @@ Task PopToRootAsync(this Shell shell, object? parameter = null, bool animate = t
 Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null, bool popToRootFirst = true)
 Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null, bool animate = true, bool animateAllPages = false)
 Task PushModalAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
+Task ReplaceAsync(this Shell shell, Type? pageType, object? parameter = null, bool animate = true)
 ```
 
 ***TODO List:***
