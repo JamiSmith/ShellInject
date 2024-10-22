@@ -24,7 +24,7 @@
         <Copyright>Jamie Smith 2024</Copyright>
         <NeutralLanguage>en</NeutralLanguage>
         <Owners>Jamie Smith</Owners>
-        <PackageReleaseNotes>Added a README.md to the project and removed a package that was not needed which caused errors sometimes when others would install the package.</PackageReleaseNotes>
+        <PackageReleaseNotes>File/folder Organization and some fixes for the navigation (ReplaceAsync) method, plus some other improveents.</PackageReleaseNotes>
         <Summary>Enables complex data transfer between ViewModels in .NET MAUI ShellNavigation, integrating dependency injection.</Summary>
         <Description>ShellInject allows seamless transfer of data between ViewModels using MAUI’s ShellNavigation. It simplifies navigation and enhances dependency injection support.</Description>
         <PackageTags>.NET MAUI, navigation, ViewModel, DI, cross-platform, MVVM, mobile development, Shell Navigation, Xamarin.Forms, dependency injection, developer tools</PackageTags>
