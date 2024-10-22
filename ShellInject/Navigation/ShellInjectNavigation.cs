@@ -1,7 +1,7 @@
 ﻿using ShellInject.Constants;
 using ShellInject.Interfaces;
 
-namespace ShellInject;
+namespace ShellInject.Navigation;
 
 /// <summary>
 /// Provides navigation methods for Shell-based navigation in a Maui application.
@@ -123,13 +123,24 @@ internal class ShellInjectNavigation
         {
             return;
         }
-        
+
+        var isAlreadyCurrentPage = Shell.Current.CurrentPage?.GetType().Name == pageType.Name;
         RegisterRoute(pageType, pageType.Name);
         ShellSetup(shell);
         _navigationParameter = tParameter;
         await Shell.Current.GoToAsync($"//{pageType.Name}", animate: animate);
         await Task.Delay(500); // awaiting this so the page's binding context has time to set 
         ShellTeardown(shell);
+
+        // If the Page wanting to replace is the same as the current page, then try triggering the DataReceivedAsync method
+        // since Shell won't trigger the OnNavigating event in this scenario
+        if (isAlreadyCurrentPage)
+        {
+            if (Shell.Current.CurrentPage is ContentPage { BindingContext: IShellInjectShellViewModel viewModel })
+            {
+                await viewModel.DataReceivedAsync(tParameter);
+            }
+        }
     }
     
     /// <summary>

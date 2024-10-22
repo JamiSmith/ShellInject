@@ -17,13 +17,14 @@
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
-        <PackageVersion>3.0.0</PackageVersion>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageVersion>3.0.2</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2024</Copyright>
         <NeutralLanguage>en</NeutralLanguage>
         <Owners>Jamie Smith</Owners>
-        <PackageReleaseNotes>Ported from EzShell.Maui with improved data transfer functionality and various bug fixes.</PackageReleaseNotes>
+        <PackageReleaseNotes>File/folder Organization and some fixes for the navigation (ReplaceAsync) method, plus some other improveents.</PackageReleaseNotes>
         <Summary>Enables complex data transfer between ViewModels in .NET MAUI ShellNavigation, integrating dependency injection.</Summary>
         <Description>ShellInject allows seamless transfer of data between ViewModels using MAUI’s ShellNavigation. It simplifies navigation and enhances dependency injection support.</Description>
         <PackageTags>.NET MAUI, navigation, ViewModel, DI, cross-platform, MVVM, mobile development, Shell Navigation, Xamarin.Forms, dependency injection, developer tools</PackageTags>
@@ -36,8 +37,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.92" />
     </ItemGroup>
 
