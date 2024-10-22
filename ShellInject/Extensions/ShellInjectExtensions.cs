@@ -1,4 +1,6 @@
-﻿namespace ShellInject;
+﻿using ShellInject.Navigation;
+
+namespace ShellInject;
 
 /// <summary>
 /// Provides extension methods for the Shell class to simplify navigation operations.
