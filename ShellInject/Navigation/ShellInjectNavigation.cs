@@ -1,4 +1,5 @@
-﻿using ShellInject.Constants;
+﻿using System.Reflection;
+using ShellInject.Constants;
 using ShellInject.Interfaces;
 
 namespace ShellInject.Navigation;
@@ -58,14 +59,37 @@ internal class ShellInjectNavigation
         _shell = null;
     }
 
+    private HashSet<string> GetRegisteredRouteKeys()
+    {
+        var getRouteKeysMethodInfo = typeof(Routing).GetMethod("GetRouteKeys", BindingFlags.NonPublic | BindingFlags.Static);
+        var routeKeyResults = getRouteKeysMethodInfo?.Invoke(null, null);
+        if (routeKeyResults is HashSet<string> routeKeys)
+        {
+            return routeKeys;
+        }
+
+        return [];
+    }
+
     /// <summary>
     /// Registers a route for a page type.
     /// </summary>
     /// <param name="pageType">The type of the page to register the route for.</param>
-    private void RegisterRoute(Type pageType, string routeName)
+    private string RegisterRoute(Type pageType)
     {
-        Routing.UnRegisterRoute(routeName);
-        Routing.RegisterRoute(routeName, pageType);
+        var prefixedRouteName = $"si_{pageType.Name}";
+        var registeredRouteKeys = GetRegisteredRouteKeys();
+        if (!registeredRouteKeys.Contains(prefixedRouteName))
+        {
+            Routing.RegisterRoute(prefixedRouteName, pageType);
+        }
+        else
+        {
+            var updatedRoute = $"{prefixedRouteName}_{Guid.NewGuid()}";
+            Routing.RegisterRoute(updatedRoute, pageType);
+        }
+
+        return prefixedRouteName;
     }
 
     /// <summary>
@@ -102,10 +126,10 @@ internal class ShellInjectNavigation
     /// <returns>A Task representing the ongoing asynchronous operation.</returns>
     internal async Task PushAsync<TParameter>(Shell shell, Type pageType, TParameter? tParameter, bool animate = true)
     {
-        RegisterRoute(pageType, pageType.Name);
+        var route = RegisterRoute(pageType);
         ShellSetup(shell);
         _navigationParameter = tParameter;
-        await Shell.Current.GoToAsync(new ShellNavigationState(pageType.Name), animate);
+        await Shell.Current.GoToAsync(route, animate);
         ShellTeardown(shell);
     }
     
@@ -125,9 +149,10 @@ internal class ShellInjectNavigation
         }
 
         var isAlreadyCurrentPage = Shell.Current.CurrentPage?.GetType().Name == pageType.Name;
-        RegisterRoute(pageType, pageType.Name);
+        RegisterRoute(pageType);
         ShellSetup(shell);
         _navigationParameter = tParameter;
+        await Shell.Current.Navigation.PopToRootAsync(false);
         await Shell.Current.GoToAsync($"//{pageType.Name}", animate: animate);
         await Task.Delay(500); // awaiting this so the page's binding context has time to set 
         ShellTeardown(shell);
@@ -278,20 +303,10 @@ internal class ShellInjectNavigation
             throw new NullReferenceException(ShellInjectConstants.NavigationStatesExceptionText);
         }
 
-        var navigationStack = Shell.Current.Navigation.NavigationStack.Where(p => p != null).ToList();
         var lastState = pageTypes.Last();
         foreach (var type in pageTypes)
         {
-            var pageAlreadyOnStack = navigationStack.Any(p => p.GetType() == type);
-            if (!pageAlreadyOnStack && Shell.Current.Navigation.NavigationStack.Any(p => p == null && p?.GetType() == type))
-            {
-                pageAlreadyOnStack = true;
-            }
-
-            var route = pageAlreadyOnStack ? $"{type.Name}_{Guid.NewGuid()}" : type.Name;
-
-            RegisterRoute(type, route);
-
+            var route = RegisterRoute(type);
             if (type == lastState)
             {
                 ShellSetup(shell);
