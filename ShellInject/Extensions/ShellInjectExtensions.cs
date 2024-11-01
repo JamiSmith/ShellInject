@@ -108,4 +108,16 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PushModalWithNavigation(shell, page, parameter, animate);
     }
+
+    /// <summary>
+    /// Looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="page"></param>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static Task SendDataToPageAsync(this Shell shell, Type? page, object data)
+    {
+        return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, page, data);
+    }
 }
