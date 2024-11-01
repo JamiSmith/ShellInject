@@ -59,6 +59,14 @@ Task PushModalAsync(this Shell shell, ContentPage page, object? parameter = null
 Task ReplaceAsync(this Shell shell, Type? pageType, object? parameter = null, bool animate = true)
 ```
 
+## Helper methods:
+
+This method looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method.
+```
+Task SendDataToPageAsync(this Shell shell, Type? page, object data)
+```
+
+
 ***TODO List:***
 
 1. Update Sample Project
