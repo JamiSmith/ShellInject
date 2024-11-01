@@ -348,4 +348,36 @@ internal class ShellInjectNavigation
         
         ShellTeardown(shell);
     }
+
+    /// <summary>
+    /// Looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="page"></param>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    internal Task SendDataToPageAsync(Shell shell, Type? page, object data)
+    {
+        if (page == null)
+        {
+            return Task.CompletedTask;
+        }
+        
+        var navigationStack = Shell.Current?.Navigation?.NavigationStack;
+        if (navigationStack == null || navigationStack.Count == 0)
+        {
+            return Task.CompletedTask;
+        }
+
+        var pageToSendDataTo = navigationStack
+            .Where(p => p != null) 
+            .FirstOrDefault(p => p.GetType().Name == page.Name);
+
+        if (pageToSendDataTo is { BindingContext: IShellInjectShellViewModel vm })
+        {
+            vm.ReverseDataReceivedAsync(data);
+        }
+
+        return Task.CompletedTask;
+    }
 }

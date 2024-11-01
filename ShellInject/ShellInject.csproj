@@ -18,13 +18,13 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>3.0.3</PackageVersion>
+        <PackageVersion>3.0.4</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2024</Copyright>
         <NeutralLanguage>en</NeutralLanguage>
         <Owners>Jamie Smith</Owners>
-        <PackageReleaseNotes>Fixing issues with ambiguous routes when auto registering before navigation, plus some other improvements.</PackageReleaseNotes>
+        <PackageReleaseNotes>Added ability to send data to a specific page on the Navigation Stack.</PackageReleaseNotes>
         <Summary>Enables complex data transfer between ViewModels in .NET MAUI ShellNavigation, integrating dependency injection.</Summary>
         <Description>ShellInject allows seamless transfer of data between ViewModels using MAUI’s ShellNavigation. It simplifies navigation and enhances dependency injection support.</Description>
         <PackageTags>.NET MAUI, navigation, ViewModel, DI, cross-platform, MVVM, mobile development, Shell Navigation, Xamarin.Forms, dependency injection, developer tools</PackageTags>
