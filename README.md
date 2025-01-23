@@ -72,4 +72,5 @@ Task SendDataToPageAsync(this Shell shell, Type? page, object data)
 1. Update Sample Project
 2. Add Unit Tests
 3. Setup CI/CD
+4. Add Support for Popups
 
