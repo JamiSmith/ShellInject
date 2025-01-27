@@ -104,9 +104,14 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the page.</param>
     /// <param name="animate">A flag indicating whether to animate the transition. The default value is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task PushModalAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
+    public static Task PushModalWithNavigationAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
     {
         return ShellInjectNavigation.Instance.PushModalWithNavigation(shell, page, parameter, animate);
+    }
+
+    public static Task PushModalAsync<TParameter>(this Shell shell, Type pageType, TParameter? tParameter, bool animate = true)
+    {
+        return ShellInjectNavigation.Instance.PushModalAsync(shell, pageType, tParameter, animate);
     }
 
     /// <summary>
