@@ -358,7 +358,7 @@ internal class ShellInjectNavigation
     /// <param name="animate"></param>
     /// <typeparam name="TParameter"></typeparam>
     /// <exception cref="NullReferenceException"></exception>
-    internal async Task PushModalAsync<TParameter>(Shell shell, Type pageType, TParameter? tParameter, bool animate = true)
+    internal async Task PushModalAsync(Shell shell, Type pageType, object? tParameter, bool animate = true)
     {
         if (Activator.CreateInstance(pageType) is ContentPage contentPage)
         {
@@ -384,7 +384,7 @@ internal class ShellInjectNavigation
     /// <param name="page"></param>
     /// <param name="data"></param>
     /// <returns></returns>
-    internal Task SendDataToPageAsync(Shell shell, Type? page, object data)
+    internal Task SendDataToPageAsync(Shell shell, Type? page, object? data = null)
     {
         if (page == null)
         {

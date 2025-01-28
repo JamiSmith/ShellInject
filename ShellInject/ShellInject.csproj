@@ -19,13 +19,13 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>3.0.7</PackageVersion>
+        <PackageVersion>3.0.9</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2024</Copyright>
         <NeutralLanguage>en</NeutralLanguage>
         <Owners>Jamie Smith</Owners>
-        <PackageReleaseNotes>Some minor changes for showing modals with and withouth a navigation page</PackageReleaseNotes>
+        <PackageReleaseNotes>Updates to ShellInject setup, added an extension method to get a service</PackageReleaseNotes>
         <Summary>Enables complex data transfer between ViewModels in .NET MAUI ShellNavigation, integrating dependency injection.</Summary>
         <Description>ShellInject allows seamless transfer of data between ViewModels using MAUI’s ShellNavigation. It simplifies navigation and enhances dependency injection support.</Description>
         <PackageTags>.NET MAUI, navigation, ViewModel, DI, cross-platform, MVVM, mobile development, Shell Navigation, Xamarin.Forms, dependency injection, developer tools</PackageTags>

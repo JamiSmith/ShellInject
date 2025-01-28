@@ -20,4 +20,9 @@ public static class ShellInjectMauiBuilderExtensions
         ServiceProvider = builder.Services.BuildServiceProvider();
         return builder;
     }
+    
+    public static void UseShellInject(this IServiceProvider provider)
+    {
+        ServiceProvider = provider;
+    }
 }

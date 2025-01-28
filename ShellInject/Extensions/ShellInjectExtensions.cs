@@ -109,7 +109,15 @@ public static class ShellInjectExtensions
         return ShellInjectNavigation.Instance.PushModalWithNavigation(shell, page, parameter, animate);
     }
 
-    public static Task PushModalAsync<TParameter>(this Shell shell, Type pageType, TParameter? tParameter, bool animate = true)
+    /// <summary>
+    /// Pushes a modal page
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="pageType"></param>
+    /// <param name="tParameter"></param>
+    /// <param name="animate"></param>
+    /// <returns></returns>
+    public static Task PushModalAsync(this Shell shell, Type pageType, object? tParameter = null, bool animate = true)
     {
         return ShellInjectNavigation.Instance.PushModalAsync(shell, pageType, tParameter, animate);
     }
@@ -121,7 +129,7 @@ public static class ShellInjectExtensions
     /// <param name="page"></param>
     /// <param name="data"></param>
     /// <returns></returns>
-    public static Task SendDataToPageAsync(this Shell shell, Type? page, object data)
+    public static Task SendDataToPageAsync(this Shell shell, Type? page, object? data = null)
     {
         return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, page, data);
     }
