@@ -19,13 +19,13 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>3.0.9</PackageVersion>
+        <PackageVersion>3.0.10</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2024</Copyright>
         <NeutralLanguage>en</NeutralLanguage>
         <Owners>Jamie Smith</Owners>
-        <PackageReleaseNotes>Updates to ShellInject setup, added an extension method to get a service</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed Package dependency Issues</PackageReleaseNotes>
         <Summary>Enables complex data transfer between ViewModels in .NET MAUI ShellNavigation, integrating dependency injection.</Summary>
         <Description>ShellInject allows seamless transfer of data between ViewModels using MAUI’s ShellNavigation. It simplifies navigation and enhances dependency injection support.</Description>
         <PackageTags>.NET MAUI, navigation, ViewModel, DI, cross-platform, MVVM, mobile development, Shell Navigation, Xamarin.Forms, dependency injection, developer tools</PackageTags>
@@ -35,6 +35,9 @@
         <RepositoryUrl>https://github.com/JamiSmith/ShellInject</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+        <!-- Allow .NET 9 projects to install this package -->
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     </PropertyGroup>
 
     <ItemGroup>
@@ -42,8 +45,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+        <!-- Remove strict dependency version ranges to avoid conflicts -->
+        <PackageReference Include="CommunityToolkit.Mvvm" Version=">=8.3.2" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version=">=8.0.3" />
     </ItemGroup>
 
     <ItemGroup>
