@@ -320,7 +320,7 @@ internal class ShellInjectNavigation
     }
 
     /// <summary>
-    /// Pushes a ContentPage as a modal with navigation in a Shell-based navigation in a Maui application.
+    /// Pushes a ContentPage as a modal with navigation.
     /// </summary>
     /// <typeparam name="TParameter">The type of the parameter to be passed to the view model associated with the page. Pass null if no parameter needs to be passed.</typeparam>
     /// <param name="shell">The Shell instance.</param>
@@ -348,7 +348,35 @@ internal class ShellInjectNavigation
         
         ShellTeardown(shell);
     }
+    
+    /// <summary>
+    /// Pushes a ContentPage as a modal
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="pageType"></param>
+    /// <param name="tParameter"></param>
+    /// <param name="animate"></param>
+    /// <typeparam name="TParameter"></typeparam>
+    /// <exception cref="NullReferenceException"></exception>
+    internal async Task PushModalAsync(Shell shell, Type pageType, object? tParameter, bool animate = true)
+    {
+        if (Activator.CreateInstance(pageType) is ContentPage contentPage)
+        {
+            ShellSetup(shell);
 
+            await Shell.Current.Navigation.PushModalAsync(contentPage, animate);
+            if (contentPage.BindingContext is IShellInjectShellViewModel vm)
+            {
+                if (tParameter != null)
+                {
+                    _= vm.DataReceivedAsync(tParameter);
+                }
+            }
+        
+            ShellTeardown(shell);   
+        }
+    }
+    
     /// <summary>
     /// Looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method
     /// </summary>
@@ -356,7 +384,7 @@ internal class ShellInjectNavigation
     /// <param name="page"></param>
     /// <param name="data"></param>
     /// <returns></returns>
-    internal Task SendDataToPageAsync(Shell shell, Type? page, object data)
+    internal Task SendDataToPageAsync(Shell shell, Type? page, object? data = null)
     {
         if (page == null)
         {
