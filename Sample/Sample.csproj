@@ -62,10 +62,7 @@
         <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\ShellInject\ShellInject.csproj" />
+        <PackageReference Include="ShellInject" Version="3.0.10" />
     </ItemGroup>
 
     <ItemGroup>
