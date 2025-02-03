@@ -21,12 +21,13 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PushAsync(shell, pageType, parameter, animate);
     }
-    
-    public static Task PushAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true) where TPageType : ContentPage
+
+    public static Task PushAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
+        where TPageType : ContentPage
     {
         return ShellInjectNavigation.Instance.PushAsync(shell, typeof(TPageType), parameter, animate);
     }
-    
+
     /// <summary>
     /// Resets the navigation and replaces the current main page.
     /// Helpful for Flyout Menus
@@ -41,8 +42,9 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.ReplaceAsync(shell, pageType, parameter, animate);
     }
-    
-    public static Task ReplaceAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true) where TPageType : ContentPage
+
+    public static Task ReplaceAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
+        where TPageType : ContentPage
     {
         return ShellInjectNavigation.Instance.ReplaceAsync(shell, typeof(TPageType), parameter, animate);
     }
@@ -58,7 +60,7 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PopAsync(shell, parameter, animate);
     }
-    
+
     /// <summary>
     /// Pops the navigation stack back to the specified page type
     /// </summary>
@@ -71,7 +73,7 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PopToAsync(shell, pageType, parameter);
     }
-    
+
     public static Task PopToAsync<TPageType>(this Shell shell, object? parameter = null)
     {
         return ShellInjectNavigation.Instance.PopToAsync(shell, typeof(TPageType), parameter);
@@ -97,11 +99,12 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the tab navigation.</param>
     /// <param name="popToRootFirst">A flag indicating whether to pop to the root of the navigation stack before changing the tab.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null, bool popToRootFirst = true)
+    public static Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null,
+        bool popToRootFirst = true)
     {
         return ShellInjectNavigation.Instance.ChangeTabAsync(shell, tabIndex, parameter, popToRootFirst);
     }
-    
+
     /// <summary>
     /// Pushes multiple navigation stacks onto the Shell using a list of page types.
     /// </summary>
@@ -111,11 +114,13 @@ public static class ShellInjectExtensions
     /// <param name="animate">A boolean value indicating whether to animate the page transitions. Default is true.</param>
     /// <param name="animateAllPages">A boolean value indicating whether to animate all pages in the navigation stack. Default is false.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null, bool animate = true, bool animateAllPages = false)
+    public static Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null,
+        bool animate = true, bool animateAllPages = false)
     {
-        return ShellInjectNavigation.Instance.PushMultiStackAsync(shell, pageTypes, parameter, animate, animateAllPages);
+        return ShellInjectNavigation.Instance.PushMultiStackAsync(shell, pageTypes, parameter, animate,
+            animateAllPages);
     }
-    
+
     /// <summary>
     /// Pushes a modal page onto the navigation stack.
     /// </summary>
@@ -124,7 +129,8 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the page.</param>
     /// <param name="animate">A flag indicating whether to animate the transition. The default value is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task PushModalWithNavigationAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
+    public static Task PushModalWithNavigationAsync(this Shell shell, ContentPage page, object? parameter = null,
+        bool animate = true)
     {
         return ShellInjectNavigation.Instance.PushModalWithNavigation(shell, page, parameter, animate);
     }
@@ -142,7 +148,7 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PushModalAsync(shell, pageType, tParameter, animate);
     }
-    
+
     public static Task PushModalAsync<TPageType>(this Shell shell, object? tParameter = null, bool animate = true)
     {
         return ShellInjectNavigation.Instance.PushModalAsync(shell, typeof(TPageType), tParameter, animate);
@@ -160,7 +166,7 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, page, data);
     }
-    
+
     public static Task SendDataToPageAsync<TPageType>(this Shell shell, object? data = null)
     {
         return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, typeof(TPageType), data);
@@ -177,15 +183,16 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.ShowPopupAsync<TPopup>(shell, data);
     }
-
+    
     /// <summary>
-    /// Dismisses all popups of the specified Type
+    /// Dismisses popup of the specified Type with Parameters
     /// </summary>
     /// <param name="shell"></param>
+    /// <param name="data"></param>
     /// <typeparam name="TPopup"></typeparam>
     /// <returns></returns>
-    public static Task DismissPopupAsync<TPopup>(this Shell shell) where TPopup : Popup
+    public static Task DismissPopupAsync<TPopup>(this Shell shell, object? data = null) where TPopup : Popup
     {
-        return ShellInjectNavigation.Instance.DismissPopupAsync<TPopup>(shell);
+        return ShellInjectNavigation.Instance.DismissPopupAsync<TPopup>(shell, data);
     }
 }

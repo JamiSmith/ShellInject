@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using ShellInject.Constants;
 using ShellInject.Interfaces;
@@ -64,7 +65,8 @@ internal class ShellInjectNavigation
 
     private HashSet<string> GetRegisteredRouteKeys()
     {
-        var getRouteKeysMethodInfo = typeof(Routing).GetMethod("GetRouteKeys", BindingFlags.NonPublic | BindingFlags.Static);
+        var getRouteKeysMethodInfo =
+            typeof(Routing).GetMethod("GetRouteKeys", BindingFlags.NonPublic | BindingFlags.Static);
         var routeKeyResults = getRouteKeysMethodInfo?.Invoke(null, null);
         if (routeKeyResults is HashSet<string> routeKeys)
         {
@@ -102,7 +104,10 @@ internal class ShellInjectNavigation
     /// <param name="e">The event arguments.</param>
     private void OnShellNavigated(object? sender, ShellNavigatedEventArgs e)
     {
-        if ((_shell?.CurrentItem?.CurrentItem as IShellSectionController)?.PresentedPage is ContentPage { BindingContext: IShellInjectShellViewModel viewModel })
+        if ((_shell?.CurrentItem?.CurrentItem as IShellSectionController)?.PresentedPage is ContentPage
+            {
+                BindingContext: IShellInjectShellViewModel viewModel
+            })
         {
             if (_isReverseNavigation)
             {
@@ -144,7 +149,8 @@ internal class ShellInjectNavigation
     /// <param name="tParameter"></param>
     /// <param name="animate"></param>
     /// <typeparam name="TParameter"></typeparam>
-    internal async Task ReplaceAsync<TParameter>(Shell shell, Type? pageType, TParameter? tParameter, bool animate = true)
+    internal async Task ReplaceAsync<TParameter>(Shell shell, Type? pageType, TParameter? tParameter,
+        bool animate = true)
     {
         if (pageType == null)
         {
@@ -170,7 +176,7 @@ internal class ShellInjectNavigation
             }
         }
     }
-    
+
     /// <summary>
     /// Changes the currently selected tab in a Shell-based Maui application.
     /// </summary>
@@ -180,7 +186,8 @@ internal class ShellInjectNavigation
     /// <param name="tParameter">The parameter passed during navigation.</param>
     /// <param name="popToRootFirst">A flag indicating whether to pop to the root before changing the tab.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    internal async Task ChangeTabAsync<TParameter>(Shell shell, int tabIndex, TParameter? tParameter, bool popToRootFirst)
+    internal async Task ChangeTabAsync<TParameter>(Shell shell, int tabIndex, TParameter? tParameter,
+        bool popToRootFirst)
     {
         ShellSetup(shell);
 
@@ -188,7 +195,7 @@ internal class ShellInjectNavigation
         {
             await shell.Navigation.PopToRootAsync(false);
         }
-        
+
         _navigationParameter = tParameter;
 
         if (shell.Items[0]?.Items?.Count < tabIndex)
@@ -202,7 +209,7 @@ internal class ShellInjectNavigation
             var itemTo = shellSections[tabIndex];
             shell.CurrentItem = itemTo;
         }
-        
+
         ShellTeardown(shell);
     }
 
@@ -221,7 +228,7 @@ internal class ShellInjectNavigation
         _isReverseNavigation = true;
         _navigationParameter = tResult;
         await shell.GoToAsync("..", animate);
-        
+
         ShellTeardown(shell);
     }
 
@@ -238,7 +245,7 @@ internal class ShellInjectNavigation
             for (int i = navigationStack.Count - 1; i >= 0; i--)
             {
                 var item = navigationStack[i];
-            
+
                 // Skip null entries
                 if (item != null && item.GetType() == pageType)
                 {
@@ -256,15 +263,16 @@ internal class ShellInjectNavigation
                             _navigationParameter = tResult;
                             animate = true;
                         }
+
                         await shell.GoToAsync("..", animate);
                         ShellTeardown(shell);
                     }
-                    
+
                     return;
                 }
             }
         }
-        
+
         // If pageType not found, return to root
         await shell.GoToAsync("//", true);
     }
@@ -284,7 +292,7 @@ internal class ShellInjectNavigation
         _isReverseNavigation = true;
         _navigationParameter = tResult;
         await shell.Navigation.PopToRootAsync(animate);
-        
+
         ShellTeardown(shell);
     }
 
@@ -299,7 +307,8 @@ internal class ShellInjectNavigation
     /// <param name="animateAllPages">A boolean value indicating whether to animate all pages during the navigation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="NullReferenceException">Thrown when the pageTypes parameter is null or empty.</exception>
-    internal async Task PushMultiStackAsync<TParameter>(Shell shell, List<Type> pageTypes, TParameter tParameter, bool animate, bool animateAllPages)
+    internal async Task PushMultiStackAsync<TParameter>(Shell shell, List<Type> pageTypes, TParameter tParameter,
+        bool animate, bool animateAllPages)
     {
         if (pageTypes == null || pageTypes.Count == 0)
         {
@@ -315,7 +324,7 @@ internal class ShellInjectNavigation
                 ShellSetup(shell);
                 _navigationParameter = tParameter;
             }
-            
+
             await shell.GoToAsync(route, type == lastState ? animate : animateAllPages);
         }
 
@@ -331,7 +340,8 @@ internal class ShellInjectNavigation
     /// <param name="tParameter">The parameter to be passed to the view model associated with the page.</param>
     /// <param name="animate">Specifies whether the navigation transition should be animated or not. Default value is true.</param>
     /// <exception cref="NullReferenceException">Thrown if the given shell is null or the given page is null.</exception>
-    internal async Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter, bool animate = true)
+    internal async Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter,
+        bool animate = true)
     {
         ShellSetup(shell);
 
@@ -345,13 +355,13 @@ internal class ShellInjectNavigation
         {
             if (tParameter != null)
             {
-                _= vm.DataReceivedAsync(tParameter);
+                _ = vm.DataReceivedAsync(tParameter);
             }
         }
-        
+
         ShellTeardown(shell);
     }
-    
+
     /// <summary>
     /// Pushes a ContentPage as a modal
     /// </summary>
@@ -372,14 +382,14 @@ internal class ShellInjectNavigation
             {
                 if (tParameter != null)
                 {
-                    _= vm.DataReceivedAsync(tParameter);
+                    _ = vm.DataReceivedAsync(tParameter);
                 }
             }
-        
-            ShellTeardown(shell);   
+
+            ShellTeardown(shell);
         }
     }
-    
+
     /// <summary>
     /// Looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method
     /// </summary>
@@ -393,7 +403,7 @@ internal class ShellInjectNavigation
         {
             return Task.CompletedTask;
         }
-        
+
         var navigationStack = shell?.Navigation?.NavigationStack;
         if (navigationStack == null || navigationStack.Count == 0)
         {
@@ -401,7 +411,7 @@ internal class ShellInjectNavigation
         }
 
         var pageToSendDataTo = navigationStack
-            .Where(p => p != null) 
+            .Where(p => p != null)
             .FirstOrDefault(p => p.GetType().Name == page.Name);
 
         if (pageToSendDataTo is { BindingContext: IShellInjectShellViewModel vm })
@@ -411,7 +421,7 @@ internal class ShellInjectNavigation
 
         return Task.CompletedTask;
     }
-    
+
     /// <summary>
     /// Shows/Creates a Popup of the Specified Type and passes in a data object
     /// </summary>
@@ -432,29 +442,43 @@ internal class ShellInjectNavigation
         }
 
         _popupStack.Add(popupPage);
-        _= shell.CurrentPage.ShowPopupAsync(popupPage);
-        
-        if (popupPage.BindingContext is IShellInjectShellViewModel vm)
+        _ = shell.CurrentPage.ShowPopupAsync(popupPage);
+
+        if (popupPage.BindingContext is ShellInjectViewModel vm)
         {
             await vm.DataReceivedAsync(data);
         }
     }
-    
+
     /// <summary>
-    /// Dismisses all popups of the specified Type
+    /// Dismisses popup of the specified Type with Parameters
     /// </summary>
     /// <param name="shell"></param>
+    /// <param name="data"></param>
     /// <typeparam name="TPopup"></typeparam>
-    /// <returns></returns>
-    internal async Task DismissPopupAsync<TPopup>(Shell shell) where TPopup : Popup
+    internal async Task DismissPopupAsync<TPopup>(Shell shell, object? data) where TPopup : Popup
     {
-        // TODO  - parameters
         var typedPopups = _popupStack.OfType<TPopup>().ToList();
         foreach (var typedPopup in typedPopups)
         {
             try
             {
-                await typedPopup.CloseAsync(); 
+                if (data is not null)
+                {
+                    EventHandler<PopupClosedEventArgs>? handler = null;
+                    handler = async (_, _) =>
+                    {
+                        typedPopup.Closed -= handler;
+                        if (shell.CurrentPage.BindingContext is ShellInjectViewModel vm)
+                        {
+                            await vm.ReverseDataReceivedAsync(data);
+                        }
+                    };
+
+                    typedPopup.Closed += handler;
+                }
+                
+                await typedPopup.CloseAsync();
             }
             catch (ObjectDisposedException)
             {
