@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Sample.ContentPages;
@@ -30,7 +29,7 @@ public partial class MainViewModel : BaseViewModel
     private Task OnShowDetailsAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.PushAsync(typeof(DetailsPage), "Hello from Main Page!");
+        return Shell.Current.PushAsync<DetailsPage>("Hello from Main Page!");
     }
     
     [RelayCommand]
@@ -38,5 +37,12 @@ public partial class MainViewModel : BaseViewModel
     {
         ReverseDataText = string.Empty;
         return Shell.Current.PushModalAsync(typeof(DetailsPage), "This is a modal");
+    }
+    
+    [RelayCommand]
+    private Task OnShowPopupAsync()
+    {
+        ReverseDataText = string.Empty;
+        return Shell.Current.ShowPopupAsync<SamplePopup>("This is a Popup and this text is also from parameter passing using ShellInject.");
     }
 }
