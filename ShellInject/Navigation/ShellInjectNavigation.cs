@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using CommunityToolkit.Maui.Views;
 using ShellInject.Constants;
 using ShellInject.Interfaces;
 
@@ -407,5 +408,36 @@ internal class ShellInjectNavigation
         }
 
         return Task.CompletedTask;
+    }
+    
+    public async Task ShowPopupAsync<TPopup>(Shell shell, Func<Task>? dismissTask, object? data)
+    {
+        if (shell.CurrentPage is null)
+        {
+            return;
+        }
+
+        if (Activator.CreateInstance(typeof(TPopup)) is not Popup popupPage)
+        {
+            return;
+        }
+        
+        await shell.CurrentPage.ShowPopupAsync(popupPage);
+        if (popupPage.BindingContext is IShellInjectShellViewModel vm)
+        {
+            await vm.DataReceivedAsync(data);
+        }
+
+        if (dismissTask is not null)
+        {
+            _ = Task.Run(async () =>
+            {
+                await dismissTask();
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await popupPage.CloseAsync();
+                });
+            });   
+        }
     }
 }

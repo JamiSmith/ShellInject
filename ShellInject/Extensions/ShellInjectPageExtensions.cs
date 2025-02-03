@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Views;
 
 namespace ShellInject.Extensions;
 
@@ -29,7 +30,7 @@ public static class ShellInjectPageExtensions
     /// <param name="newValue">The new value of the property.</param>
     private static void OnViewModelTypePropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not ContentPage page || newValue is not Type viewModelType)
+        if (bindable is not ContentPage page || bindable is not Popup || newValue is not Type viewModelType)
             return;
         
         try

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Sample.ContentPages;
@@ -38,5 +37,12 @@ public partial class MainViewModel : BaseViewModel
     {
         ReverseDataText = string.Empty;
         return Shell.Current.PushModalAsync(typeof(DetailsPage), "This is a modal");
+    }
+    
+    [RelayCommand]
+    private Task OnShowPopupAsync()
+    {
+        ReverseDataText = string.Empty;
+        return Shell.Current.ShowPopupAsync<SamplePopup>(null, "This is a modal");
     }
 }

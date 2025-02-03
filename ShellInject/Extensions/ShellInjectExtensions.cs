@@ -133,4 +133,9 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, page, data);
     }
+
+    public static Task ShowPopupAsync<TPopup>(this Shell shell, Func<Task>? dismissTask, object? data = null)
+    {
+        return ShellInjectNavigation.Instance.ShowPopupAsync<TPopup>(shell, dismissTask, data);
+    }
 }

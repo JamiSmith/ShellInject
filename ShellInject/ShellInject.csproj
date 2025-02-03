@@ -47,9 +47,10 @@
     <ItemGroup>
         <!-- Remove strict dependency version ranges to avoid conflicts -->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="[8.3.2,)" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.Maui.Controls" Version="[8.0.3,)" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.Maui.Controls" Version="[8.0.14,)" PrivateAssets="all"/>
+        <PackageReference Include="CommunityToolkit.Maui" Version="[9.0.0,)" PrivateAssets="all"/>
     </ItemGroup>
-
+    
     <ItemGroup>
       <Folder Include="Platforms\Android\" />
       <Folder Include="Platforms\iOS\" />
