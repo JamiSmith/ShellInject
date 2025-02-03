@@ -29,7 +29,7 @@ public partial class MainViewModel : BaseViewModel
     private Task OnShowDetailsAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.PushAsync(typeof(DetailsPage), "Hello from Main Page!");
+        return Shell.Current.PushAsync<DetailsPage>("Hello from Main Page!");
     }
     
     [RelayCommand]
@@ -43,6 +43,6 @@ public partial class MainViewModel : BaseViewModel
     private Task OnShowPopupAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.ShowPopupAsync<SamplePopup>(null, "This is a modal");
+        return Shell.Current.ShowPopupAsync<SamplePopup>("This is a Popup and this text is also from parameter passing using ShellInject.");
     }
 }

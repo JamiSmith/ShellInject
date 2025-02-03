@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Sample.ContentPages;
+using ShellInject;
 
 namespace Sample.ViewModels;
 
@@ -22,6 +24,6 @@ public partial class SamplePopupViewModel : BaseViewModel
     [RelayCommand]
     private Task OnDismissAsync()
     {
-        return Task.CompletedTask;
+        return Shell.Current.DismissPopupAsync<SamplePopup>();
     }
 }

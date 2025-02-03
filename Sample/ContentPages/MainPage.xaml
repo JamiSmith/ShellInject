@@ -19,7 +19,7 @@
                 Command="{Binding PushModalCommand}" />
             <Button 
                 Text="Popup"
-                Command="{Binding PushModalCommand}" />
+                Command="{Binding ShowPopupCommand}" />
             <Label
                 HorizontalOptions="Center"
                 TextColor="Black"

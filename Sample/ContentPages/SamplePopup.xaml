@@ -8,8 +8,11 @@
              extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:SamplePopupViewModel}"
              x:DataType="vm:SamplePopupViewModel"
              x:Class="Sample.ContentPages.SamplePopup">
-    <ContentPage.Content>
-        <VerticalStackLayout>
+    <toolkit:Popup.Content>
+        <VerticalStackLayout
+            Padding="16"
+            Spacing="16"
+            BackgroundColor="White">
             <Label
                 HorizontalTextAlignment="Center"
                 TextColor="Black"
@@ -18,5 +21,5 @@
                 Command="{Binding DismissCommand}"
                 Text="Dismiss"/>
         </VerticalStackLayout>
-    </ContentPage.Content>
+    </toolkit:Popup.Content>
 </toolkit:Popup>
