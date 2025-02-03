@@ -18,8 +18,8 @@ public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShell
     /// This command is executed when the page is about to disappear from the screen.
     /// It can be used to perform any necessary cleanup or finalize any operations before the page is no longer visible.
     /// </remarks>
-    public ICommand OnDisAppearingCommand { get; }
-
+    public ICommand OnDisAppearingCommand { get; } 
+    
     /// <summary>
     /// The ShellInjectViewModel class is a base class that provides common functionality for view models in the ShellInjectViewModel namespace.
     /// It inherits from ObservableObject and implements the IShellInjectViewModel interface.

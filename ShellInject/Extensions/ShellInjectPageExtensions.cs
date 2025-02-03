@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Views;
 
 namespace ShellInject.Extensions;
 
@@ -29,8 +30,10 @@ public static class ShellInjectPageExtensions
     /// <param name="newValue">The new value of the property.</param>
     private static void OnViewModelTypePropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not ContentPage page || newValue is not Type viewModelType)
+        if (newValue is not Type viewModelType)
+        {
             return;
+        }
         
         try
         {
@@ -38,12 +41,19 @@ public static class ShellInjectPageExtensions
                 ? Activator.CreateInstance(viewModelType)
                 : ActivatorUtilities.CreateInstance(ShellInjectMauiBuilderExtensions.ServiceProvider, viewModelType);
 
-            page.BindingContext = viewModelInstance;
+            switch (bindable)
+            {
+                case ContentPage page:
+                    page.BindingContext = viewModelInstance;
+                    break;
+                case Popup popup:
+                    popup.BindingContext = viewModelInstance;
+                    break;
+            }
         }
-        catch (Exception exception)
+        catch (Exception)
         {
-            // Just catch it
-            Debug.WriteLine(exception.Message);
+            // ignored
         }
     }
 
