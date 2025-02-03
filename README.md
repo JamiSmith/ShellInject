@@ -56,21 +56,28 @@ ShellInject provides extension methods to simplify navigation between pages and 
 
 **Example:**
 ```csharp
-await Shell.Current.PushAsync(typeof(DetailsPage), new { id = 123, name = "John" });
+await Shell.Current.PushAsync<DetailsPage>(new { id = 123, name = "John" });
 ```
 
 Available navigation methods:
 
 ```
-Task PushAsync(this Shell shell, Type pageType, object? parameter, bool animate = true)
+Task PushAsync<TPageType>(this Shell shell, object? parameter, bool animate = true)
 Task PopAsync(this Shell shell, object? parameter = null, bool animate = true)
-Task PopToAsync(this Shell shell, Type pageType, object? parameter = null, bool animate = true)
+Task PopToAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
 Task PopToRootAsync(this Shell shell, object? parameter = null, bool animate = true)
 Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null, bool popToRootFirst = true)
 Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null, bool animate = true, bool animateAllPages = false)
-Task PushModalAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
-Task PushModalWithNavigationAsync(this Shell shell, Type pageType, object? parameter = null, bool animate = true)
-Task ReplaceAsync(this Shell shell, Type? pageType, object? parameter = null, bool animate = true)
+Task PushModalAsync<TPageType>(this Shell shell, object? tParameter = null, bool animate = true)
+Task PushModalWithNavigationAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
+Task ReplaceAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
+```
+
+Popups
+
+```
+Task ShowPopupAsync<TPopup>(this Shell shell, object? data = null)
+Task DismissPopupAsync<TPopup>(this Shell shell, object? data = null)
 ```
 
 ## Helper methods:
@@ -86,5 +93,4 @@ Task SendDataToPageAsync(this Shell shell, Type? page, object data)
 1. Update Sample Project
 2. Add Unit Tests
 3. Setup CI/CD
-4. Add Support for Popups?
 
