@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:extensions="clr-namespace:ShellInject.Extensions;assembly=ShellInject"
+             xmlns:vm="clr-namespace:Sample.ViewModels"
+             extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:SamplePage3ViewModel}"
+             x:DataType="vm:SamplePage3ViewModel"
+             x:Class="Sample.ContentPages.SamplePage3">
+    <ContentPage.Content>
+        <VerticalStackLayout>
+            <Button
+                TextColor="Black"
+                Command="{Binding PushCommand}"
+                Text="Push"/>
+            <Button
+                TextColor="Black"
+                Command="{Binding CloseCommand}"
+                Text="Close"/>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

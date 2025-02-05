@@ -20,6 +20,9 @@
             <Button 
                 Text="Popup"
                 Command="{Binding ShowPopupCommand}" />
+            <Button 
+                Text="Modal with Navigation"
+                Command="{Binding NavigateTestCommand}" />
             <Label
                 HorizontalOptions="Center"
                 TextColor="Black"

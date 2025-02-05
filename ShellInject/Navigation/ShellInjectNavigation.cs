@@ -65,8 +65,7 @@ internal class ShellInjectNavigation
 
     private HashSet<string> GetRegisteredRouteKeys()
     {
-        var getRouteKeysMethodInfo =
-            typeof(Routing).GetMethod("GetRouteKeys", BindingFlags.NonPublic | BindingFlags.Static);
+        var getRouteKeysMethodInfo = typeof(Routing).GetMethod("GetRouteKeys", BindingFlags.NonPublic | BindingFlags.Static);
         var routeKeyResults = getRouteKeysMethodInfo?.Invoke(null, null);
         if (routeKeyResults is HashSet<string> routeKeys)
         {
@@ -149,8 +148,7 @@ internal class ShellInjectNavigation
     /// <param name="tParameter"></param>
     /// <param name="animate"></param>
     /// <typeparam name="TParameter"></typeparam>
-    internal async Task ReplaceAsync<TParameter>(Shell shell, Type? pageType, TParameter? tParameter,
-        bool animate = true)
+    internal async Task ReplaceAsync<TParameter>(Shell shell, Type? pageType, TParameter? tParameter, bool animate = true)
     {
         if (pageType == null)
         {
@@ -186,8 +184,7 @@ internal class ShellInjectNavigation
     /// <param name="tParameter">The parameter passed during navigation.</param>
     /// <param name="popToRootFirst">A flag indicating whether to pop to the root before changing the tab.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    internal async Task ChangeTabAsync<TParameter>(Shell shell, int tabIndex, TParameter? tParameter,
-        bool popToRootFirst)
+    internal async Task ChangeTabAsync<TParameter>(Shell shell, int tabIndex, TParameter? tParameter, bool popToRootFirst)
     {
         ShellSetup(shell);
 
@@ -233,12 +230,45 @@ internal class ShellInjectNavigation
     }
 
     /// <summary>
+    /// Closes the entire current Modal stack with Optional Parameter
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="data"></param>
+    /// <param name="animate"></param>
+    /// <returns></returns>
+    internal async Task PopModalStackAsync(Shell shell, object? data, bool animate)
+    {
+        var modalStack = shell.Navigation.ModalStack;
+        var navStack = modalStack is { Count: > 0 } ? modalStack[^1].Navigation?.NavigationStack : null;
+        if (navStack == null || navStack.Count == 0)
+        {
+            return;
+        }
+
+        // Loop through the navigation stack in reverse
+        for (var index = navStack.Count - 1; index >= 0; index--)
+        {
+            if (index > 0)
+            {
+                await shell.GoToAsync("..", false); // Pop non modals
+            }
+            else
+            {
+                ShellSetup(shell);
+                _isReverseNavigation = true;
+                _navigationParameter = data;
+                await shell.GoToAsync(".."); // Pop the modal and pass Data
+                ShellTeardown(shell);
+            }
+        }
+    }
+
+    /// <summary>
     /// Pops all pages from the navigation stack and returns to the root page.
     /// </summary>
     internal async Task PopToAsync<TResult>(Shell shell, Type pageType, TResult tResult)
     {
         var navigationStack = shell.Navigation.NavigationStack;
-
         if (navigationStack is { Count: > 0 })
         {
             // Iterate backwards through the navigation stack to find the target page type
@@ -307,8 +337,7 @@ internal class ShellInjectNavigation
     /// <param name="animateAllPages">A boolean value indicating whether to animate all pages during the navigation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="NullReferenceException">Thrown when the pageTypes parameter is null or empty.</exception>
-    internal async Task PushMultiStackAsync<TParameter>(Shell shell, List<Type> pageTypes, TParameter tParameter,
-        bool animate, bool animateAllPages)
+    internal async Task PushMultiStackAsync<TParameter>(Shell shell, List<Type> pageTypes, TParameter tParameter, bool animate, bool animateAllPages)
     {
         if (pageTypes == null || pageTypes.Count == 0)
         {
@@ -340,8 +369,7 @@ internal class ShellInjectNavigation
     /// <param name="tParameter">The parameter to be passed to the view model associated with the page.</param>
     /// <param name="animate">Specifies whether the navigation transition should be animated or not. Default value is true.</param>
     /// <exception cref="NullReferenceException">Thrown if the given shell is null or the given page is null.</exception>
-    internal async Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter,
-        bool animate = true)
+    internal async Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter, bool animate = true)
     {
         ShellSetup(shell);
 

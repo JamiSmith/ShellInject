@@ -60,6 +60,18 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PopAsync(shell, parameter, animate);
     }
+    
+    /// <summary>
+    /// Closes the entire current Modal stack with Optional Parameter
+    /// </summary>
+    /// <param name="shell"></param>
+    /// <param name="data"></param>
+    /// <param name="animate"></param>
+    /// <returns></returns>
+    public static Task PopModalStackAsync(this Shell shell, object? data = null, bool animate = true)
+    {
+        return ShellInjectNavigation.Instance.PopModalStackAsync(shell, data, animate);
+    }
 
     /// <summary>
     /// Pops the navigation stack back to the specified page type
