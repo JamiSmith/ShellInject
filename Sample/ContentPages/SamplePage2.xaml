@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:extensions="clr-namespace:ShellInject.Extensions;assembly=ShellInject"
+             xmlns:vm="clr-namespace:Sample.ViewModels"
+             extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:SamplePage2ViewModel}"
+             x:DataType="vm:SamplePage2ViewModel"
+             x:Class="Sample.ContentPages.SamplePage2">
+    <ContentPage.Content>
+        <VerticalStackLayout>
+            <Button
+                TextColor="Black"
+                Command="{Binding PushCommand}"
+                Text="Push"/>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

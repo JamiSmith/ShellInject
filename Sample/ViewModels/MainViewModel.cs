@@ -36,7 +36,7 @@ public partial class MainViewModel : BaseViewModel
     private Task OnPushModalAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.PushModalAsync(typeof(DetailsPage), "This is a modal");
+        return Shell.Current.PushModalAsync<DetailsPage>("This is a modal");
     }
     
     [RelayCommand]
@@ -44,5 +44,12 @@ public partial class MainViewModel : BaseViewModel
     {
         ReverseDataText = string.Empty;
         return Shell.Current.ShowPopupAsync<SamplePopup>("This is a Popup and this text is also from parameter passing using ShellInject.");
+    }
+    
+    [RelayCommand]
+    private Task OnNavigateTestAsync()
+    {
+        ReverseDataText = string.Empty;
+        return Shell.Current.PushModalWithNavigationAsync(new SamplePage2());
     }
 }
