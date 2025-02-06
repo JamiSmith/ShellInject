@@ -65,6 +65,10 @@ Available navigation methods:
 ```
 PushAsync<TPageType>(someData)
 PushMultiStackAsync(pageTypes, someData)
+```
+
+***Modals:***
+```
 PushModalWithNavigationAsync(contentPage, someData)
 PushModalAsync<TPageType>(someData)
 ```
@@ -84,10 +88,9 @@ ShowPopupAsync<TPopup>(someData)
 DismissPopupAsync<TPopup>(someData)
 ```
 
-***Replacing Pages on a Flyout Menu***
+***Replacing Root Pages in a Flyout Menu:***
 ```
 ReplaceAsync<TPageType>(someData)
-ChangeTabAsync(tabIndex, someData)
 ```
 
 ***Changing Tabs:***
