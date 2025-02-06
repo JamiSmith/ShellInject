@@ -2,7 +2,7 @@
 
 ShellInject simplifies navigation and data transfer between ViewModels in .NET MAUI applications by leveraging the power of Shell Navigation combined with robust Dependency Injection. This package eliminates the need to manually register routes or ViewModels in your services, as ShellInject automatically handles route registration and ViewModel bindings for you.
 
-With a single-line setup, ShellInject enhances maintainability and reduces boilerplate code, setting the BindingContext dynamically based on the ViewModelType property defined in XAML. This enables effortless parameter passing, lifecycle management, and seamless ViewModel interactions, making it ideal for applications with complex navigation flows or multi-page structures.
+With a single-line setup, ShellInject enhances maintainability and reduces boilerplate code, setting the BindingContext dynamically based on the ViewModelType property defined in XAML. This enables effortless parameter passing, lifecycle management, and seamless ViewModel interactions, making it ideal for applications with complex navigation flows or multi-page structures. 
 
 ## Setup
 
@@ -56,28 +56,50 @@ ShellInject provides extension methods to simplify navigation between pages and 
 
 **Example:**
 ```csharp
-await Shell.Current.PushAsync(typeof(DetailsPage), new { id = 123, name = "John" });
+await Shell.Current.PushAsync<DetailsPage>(new { id = 123, name = "John" });
 ```
 
 Available navigation methods:
 
+***Pushing:***
 ```
-Task PushAsync(this Shell shell, Type pageType, object? parameter, bool animate = true)
-Task PopAsync(this Shell shell, object? parameter = null, bool animate = true)
-Task PopToAsync(this Shell shell, Type pageType, object? parameter = null, bool animate = true)
-Task PopToRootAsync(this Shell shell, object? parameter = null, bool animate = true)
-Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null, bool popToRootFirst = true)
-Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null, bool animate = true, bool animateAllPages = false)
-Task PushModalAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
-Task PushModalWithNavigationAsync(this Shell shell, Type pageType, object? parameter = null, bool animate = true)
-Task ReplaceAsync(this Shell shell, Type? pageType, object? parameter = null, bool animate = true)
+PushAsync<TPageType>(someData)
+PushMultiStackAsync(pageTypes, someData)
+PushModalWithNavigationAsync(contentPage, someData)
+PushModalAsync<TPageType>(someData)
+```
+
+***Popping:***
+```
+PopAsync(someData)
+PopModalStackAsync(someData)
+PopToAsync<TPageType>(someData)
+PopToRootAsync(someData)
+```
+
+***Popups:***
+
+```
+ShowPopupAsync<TPopup>(someData)
+DismissPopupAsync<TPopup>(someData)
+```
+
+***Replacing Pages on a Flyout Menu***
+```
+ReplaceAsync<TPageType>(someData)
+ChangeTabAsync(tabIndex, someData)
+```
+
+***Changing Tabs:***
+```
+ChangeTabAsync(tabIndex, someData)
 ```
 
 ## Helper methods:
 
 This method looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method.
 ```
-Task SendDataToPageAsync(this Shell shell, Type? page, object data)
+SendDataToPageAsync<TPageType>(someData)
 ```
 
 
@@ -86,5 +108,4 @@ Task SendDataToPageAsync(this Shell shell, Type? page, object data)
 1. Update Sample Project
 2. Add Unit Tests
 3. Setup CI/CD
-4. Add Support for Popups?
 
