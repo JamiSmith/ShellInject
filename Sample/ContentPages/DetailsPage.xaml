@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Sample.ViewModels"
              xmlns:extensions="clr-namespace:ShellInject.Extensions;assembly=ShellInject"
+             xmlns:contentViews="clr-namespace:Sample.ContentViews"
              extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:DetailsViewModel}"
              extensions:ShellInjectPageExtensions.OnAppearingCommand="{Binding OnAppearingCommand}"
              extensions:ShellInjectPageExtensions.OnDisappearingCommand="{Binding OnDisAppearingCommand}"
@@ -23,6 +24,7 @@
             <Button 
                 Text="Pop with Parameters"
                 Command="{Binding PopWithParameterCommand}" />
+            <contentViews:TestContentView/>
         </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>

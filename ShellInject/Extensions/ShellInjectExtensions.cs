@@ -21,7 +21,7 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PushAsync(shell, pageType, parameter, animate);
     }
-
+    
     public static Task PushAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
         where TPageType : ContentPage
     {
