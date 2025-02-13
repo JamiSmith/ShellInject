@@ -49,6 +49,27 @@ public static class ShellInjectPageExtensions
                 case Popup popup:
                     popup.BindingContext = viewModelInstance;
                     break;
+                case ContentView contentView:
+                    contentView.BindingContext = viewModelInstance;
+                    break;
+                case Shell shell:
+                    shell.BindingContext = viewModelInstance;
+                    break;
+                case FlyoutPage flyoutPage:
+                    flyoutPage.BindingContext = viewModelInstance;
+                    break;
+                case NavigationPage navigationPage:
+                    navigationPage.BindingContext = viewModelInstance;
+                    break;
+                case TabbedPage tabbedPage:
+                    tabbedPage.BindingContext = viewModelInstance;
+                    break;
+                case CollectionView collectionView:
+                    collectionView.BindingContext = viewModelInstance;
+                    break;
+                case Layout layout: // Covers Frame, Grid, StackLayout, and other layouts
+                    layout.BindingContext = viewModelInstance;
+                    break;
             }
         }
         catch (Exception)
