@@ -23,7 +23,19 @@ public interface IShellInjectShellViewModel
     Task ReverseDataReceivedAsync(object? parameter);
 
     /// <summary>
-    /// OnAppearing Method
+    /// Executes operations asynchronously when the page appears.
     /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task OnPageAppearedAsync();
+
+    /// <summary>
+    /// Handles operations asynchronously when the page is disappearing.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task OnPageDisAppearingAsync();
+
+    // /// <summary>
+    // /// OnAppearing Method
+    // /// </summary>
     void OnAppearing();
 }

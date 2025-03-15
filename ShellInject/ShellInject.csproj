@@ -19,13 +19,12 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>3.1.2</PackageVersion>
+        <PackageVersion>3.1.3</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2024</Copyright>
         <NeutralLanguage>en</NeutralLanguage>
         <Owners>Jamie Smith</Owners>
-        <PackageReleaseNotes>Expanded ViewModel binding support to additional UI elements</PackageReleaseNotes>
         <Summary>Enables complex data transfer between ViewModels in .NET MAUI ShellNavigation, integrating dependency injection.</Summary>
         <Description>ShellInject allows seamless transfer of data between ViewModels using MAUI’s ShellNavigation. It simplifies navigation and enhances dependency injection support.</Description>
         <PackageTags>.NET MAUI, navigation, ViewModel, DI, cross-platform, MVVM, mobile development, Shell Navigation, Xamarin.Forms, dependency injection, developer tools</PackageTags>
@@ -35,6 +34,13 @@
         <RepositoryUrl>https://github.com/JamiSmith/ShellInject</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageReleaseNotes>
+            • Implemented OnPageAppearing for automatic handling during navigation or first load
+            • DataReceivedAsync triggers when data is passed; PageAppeared triggers otherwise
+            • Added async event handling to avoid lost exceptions
+            • Introduced safe event detachment and Injector class for easier service access
+        </PackageReleaseNotes>
+
 
         <!-- Allow .NET 9 projects to install this package -->
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
