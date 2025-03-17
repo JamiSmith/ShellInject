@@ -12,15 +12,16 @@ public partial class DetailsViewModel : BaseViewModel
     public override void OnAppearing()
     {
         base.OnAppearing();
-        
-        Debug.WriteLine("OnAppearing");
     }
 
-    public override void OnDisAppearing()
+    public override Task OnPageAppearedAsync()
     {
-        base.OnDisAppearing();
-        
-        Debug.WriteLine("OnDisAppearing");
+        return base.OnPageAppearedAsync();
+    }
+
+    public override Task OnPageDisAppearingAsync()
+    {
+        return base.OnPageDisAppearingAsync();
     }
 
     public override Task DataReceivedAsync(object? parameter)

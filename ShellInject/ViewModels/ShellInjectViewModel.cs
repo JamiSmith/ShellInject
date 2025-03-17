@@ -54,4 +54,23 @@ public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShell
     /// </summary>
     public virtual void OnDisAppearing() { }
 
+    /// <summary>
+    /// Executes logic when a page is fully displayed and navigated to.
+    /// This method is typically overridden in derived view models to implement custom behavior.
+    /// </summary>
+    /// <returns>A Task that represents the asynchronous operation.</returns>
+    public virtual Task OnPageAppearedAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Executes logic during the disappearance of a page.
+    /// This method is called when the page is about to disappear.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public virtual Task OnPageDisAppearingAsync()
+    {
+        return Task.CompletedTask;
+    }
 }

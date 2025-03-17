@@ -2,14 +2,25 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Sample.ContentPages;
+using Sample.Services;
 using ShellInject;
 
 namespace Sample.ViewModels;
 
-public partial class MainViewModel : BaseViewModel
+public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
 {
     [ObservableProperty] private string _reverseDataText = string.Empty;
-    
+
+    public override Task OnPageDisAppearingAsync()
+    {
+        return base.OnPageDisAppearingAsync();
+    }
+
+    public override Task OnPageAppearedAsync()
+    {
+        return base.OnPageAppearedAsync();
+    }
+
     public override Task ReverseDataReceivedAsync(object? parameter)
     {
         if (parameter is string text)

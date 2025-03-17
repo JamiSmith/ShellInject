@@ -7,7 +7,6 @@
              xmlns:contentViews="clr-namespace:Sample.ContentViews"
              extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:DetailsViewModel}"
              extensions:ShellInjectPageExtensions.OnAppearingCommand="{Binding OnAppearingCommand}"
-             extensions:ShellInjectPageExtensions.OnDisappearingCommand="{Binding OnDisAppearingCommand}"
              x:DataType="vm:DetailsViewModel"
              Title="Details Page"
              BackgroundColor="White"

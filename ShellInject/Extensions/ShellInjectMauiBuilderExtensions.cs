@@ -1,3 +1,7 @@
+using Microsoft.Maui.LifecycleEvents;
+using ShellInject.Interfaces;
+using ShellInject.Services;
+
 namespace ShellInject;
 
 /// <summary>
@@ -5,10 +9,7 @@ namespace ShellInject;
 /// </summary>
 public static class ShellInjectMauiBuilderExtensions
 {
-    /// <summary>
-    /// Represents the service provider used for dependency injection in ShellInject framework.
-    /// </summary>
-    public static IServiceProvider? ServiceProvider { get; private set; }
+    private static EventHandler<ShellNavigatedEventArgs>? _navigatedHandler;
 
     /// <summary>
     /// Uses ShellInject to configure the ShellInjectMauiBuilderExtensions in a Maui app.
@@ -17,12 +18,80 @@ public static class ShellInjectMauiBuilderExtensions
     /// <returns>The modified MauiAppBuilder instance.</returns>
     public static MauiAppBuilder UseShellInject(this MauiAppBuilder builder)
     {
-        ServiceProvider = builder.Services.BuildServiceProvider();
+        builder.Services.AddSingleton<IMauiInitializeService, ShellInjectInitializer>();
+        
+        builder.ConfigureLifecycleEvents(life =>
+        {
+#if IOS
+            life.AddiOS(i => i.FinishedLaunching((app, launchOptions) =>
+            {
+                if (Application.Current?.MainPage is not Shell shell)
+                {
+                    return true;
+                }
+                
+                // shell.Navigated += OnShellNavigated;
+                _navigatedHandler = async void (s, e) =>
+                {
+                    try
+                    {
+                        await OnShellNavigatedAsync(s, e);
+                    }
+                    catch
+                    {
+                        // just catch it
+                    }
+                };
+                shell.Navigated += _navigatedHandler;
+                return true;
+            }));
+#endif
+#if ANDROID 
+            life.AddAndroid(a => a.OnCreate((activity, state) =>
+            {
+                if (Application.Current?.MainPage is not Shell shell)
+                {
+                    return;
+                }
+                
+                // shell.Navigated += OnShellNavigated;
+                _navigatedHandler = async void (s, e) =>
+                {
+                    try
+                    {
+                        await OnShellNavigatedAsync(s, e);
+                    }
+                    catch
+                    {
+                        // just catch it
+                    }
+                };
+                shell.Navigated += _navigatedHandler;
+            }));
+#endif
+        });
+
+        
         return builder;
     }
     
-    public static void UseShellInject(this IServiceProvider provider)
+    private static async Task OnShellNavigatedAsync(object? sender, ShellNavigatedEventArgs e)
     {
-        ServiceProvider = provider;
+        if (sender is not Shell shell)
+        {
+            return;
+        }
+
+        var firstPage = shell.CurrentPage;
+        if (firstPage?.BindingContext is IShellInjectShellViewModel vm)
+        {
+            await vm.OnPageAppearedAsync();
+        }
+
+        // Only need this once, detach the event
+        if (_navigatedHandler is not null)
+        {
+            shell.Navigated -= _navigatedHandler;
+        }
     }
 }

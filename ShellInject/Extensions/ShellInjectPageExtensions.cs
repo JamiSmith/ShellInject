@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Views;
 
@@ -19,7 +18,7 @@ public static class ShellInjectPageExtensions
             "ViewModelType",
             typeof(Type),
             typeof(ShellInjectPageExtensions),
-            default(Type),
+            null,
             propertyChanged: OnViewModelTypePropertyChanged);
 
     /// <summary>
@@ -37,10 +36,7 @@ public static class ShellInjectPageExtensions
         
         try
         {
-            var viewModelInstance = ShellInjectMauiBuilderExtensions.ServiceProvider == null
-                ? Activator.CreateInstance(viewModelType)
-                : ActivatorUtilities.CreateInstance(ShellInjectMauiBuilderExtensions.ServiceProvider, viewModelType);
-
+            var viewModelInstance = ResolveViewModel(viewModelType);
             switch (bindable)
             {
                 case ContentPage page:
@@ -76,6 +72,30 @@ public static class ShellInjectPageExtensions
         {
             // ignored
         }
+    }
+    
+    private static object ResolveViewModel(Type viewModelType)
+    {
+        if (Injector.ServiceProvider is not { } provider)
+        {
+            // If there's no service provider, just do a plain Activator create:
+            return Activator.CreateInstance(viewModelType)
+                   ?? throw new InvalidOperationException(
+                       $"Unable to create instance of ViewModel. Type: {viewModelType.FullName}.");
+        }
+        
+        // Check the services for any registered instances of the specified type
+        var existingVm = provider.GetService(viewModelType);
+        if (existingVm != null)
+        {
+            // Found a registered instance (singleton/scoped/transient).
+            return existingVm;
+        }
+
+        // No existing service; create a new instance with DI injection support:
+        return ActivatorUtilities.CreateInstance(provider, viewModelType)
+               ?? throw new InvalidOperationException($"Unable to create instance of ViewModel. Type: {viewModelType.FullName}.");
+
     }
 
     /// <summary>
@@ -155,69 +175,6 @@ public static class ShellInjectPageExtensions
             return;
         
         var command = GetOnAppearingCommand(bindable);
-        command.Execute(null);
-    }
-    
-    // Attached properties for OnDisappearing events
-
-    /// <summary>
-    /// Provides an attached property for defining a command to be executed when a page disappears.
-    /// </summary>
-    public static readonly BindableProperty OnDisappearingCommandProperty =
-        BindableProperty.CreateAttached(
-            "OnDisappearingCommand",
-            typeof(ICommand),
-            typeof(ShellInjectPageExtensions),
-            null,
-            propertyChanged: OnOnDisappearingCommandChanged);
-
-    public static ICommand GetOnDisappearingCommand(BindableObject obj)
-    {
-        return (ICommand)obj.GetValue(OnDisappearingCommandProperty);
-    }
-
-    /// <summary>
-    /// Provides an attached property for defining a command to be executed when a page disappears.
-    /// </summary>
-    /// <param name="obj">The bindable object to which the attached property is attached.</param>
-    /// <param name="value">The command to be executed when the page disappears.</param>
-    public static void SetOnDisappearingCommand(BindableObject obj, ICommand value)
-    {
-        obj.SetValue(OnDisappearingCommandProperty, value);
-    }
-
-    /// <summary>
-    /// Event handler for the OnDisappearingCommand property. Executes the command when the page disappears.
-    /// </summary>
-    /// <param name="bindable">The bindable object.</param>
-    /// <param name="oldValue">The old value of the property.</param>
-    /// <param name="newValue">The new value of the property.</param>
-    private static void OnOnDisappearingCommandChanged(BindableObject bindable, object oldValue, object newValue)
-    {
-        if (bindable is not ContentPage page) 
-            return;
-        
-        if (oldValue is ICommand)
-            page.Disappearing -= OnPageDisappearing;
-
-        if (newValue is ICommand)
-            page.Disappearing += OnPageDisappearing;
-    }
-
-    /// <summary>
-    /// Represents an attached property for defining a command to be executed when a page disappears.
-    /// </summary>
-    /// <remarks>
-    /// The attached property must be set on a ContentPage instance. The specified command will be executed when the page disappears.
-    /// </remarks>
-    /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">The event arguments.</param>
-    private static void OnPageDisappearing(object? sender, EventArgs e)
-    {
-        if (sender is not BindableObject bindable) 
-            return;
-        
-        var command = GetOnDisappearingCommand(bindable);
         command.Execute(null);
     }
 }

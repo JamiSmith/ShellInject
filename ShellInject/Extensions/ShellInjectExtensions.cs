@@ -9,40 +9,27 @@ namespace ShellInject;
 public static class ShellInjectExtensions
 {
     /// <summary>
-    /// Pushes a ContentPage onto the navigation stack.
+    /// Pushes a page of the specified type onto the navigation stack asynchronously.
     /// </summary>
-    /// <param name="shell">The Shell instance.</param>
-    /// <param name="pageType"></param>
-    /// <param name="parameter">An optional parameter to pass to the pushed page.</param>
+    /// <typeparam name="TPageType">The type of the page to be pushed. Must be a subclass of ContentPage.</typeparam>
+    /// <param name="shell">The Shell instance used for navigation.</param>
+    /// <param name="parameter">An optional parameter to pass to the pushed page. Default is null.</param>
     /// <param name="animate">A boolean value indicating whether to animate the push operation. Default is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    [Obsolete("Use PushAsync<TPageType> instead.")]
-    public static Task PushAsync(this Shell shell, Type pageType, object? parameter = null, bool animate = true)
-    {
-        return ShellInjectNavigation.Instance.PushAsync(shell, pageType, parameter, animate);
-    }
-    
     public static Task PushAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
         where TPageType : ContentPage
     {
         return ShellInjectNavigation.Instance.PushAsync(shell, typeof(TPageType), parameter, animate);
     }
-
+    
     /// <summary>
-    /// Resets the navigation and replaces the current main page.
-    /// Helpful for Flyout Menus
+    /// Replaces the current page in the navigation stack with a new page of the specified type asynchronously.
     /// </summary>
-    /// <param name="shell"></param>
-    /// <param name="pageType"></param>
-    /// <param name="parameter"></param>
-    /// <param name="animate"></param>
-    /// <returns></returns>
-    [Obsolete("Use ReplaceAsync<TPageType> instead.")]
-    public static Task ReplaceAsync(this Shell shell, Type? pageType, object? parameter = null, bool animate = true)
-    {
-        return ShellInjectNavigation.Instance.ReplaceAsync(shell, pageType, parameter, animate);
-    }
-
+    /// <typeparam name="TPageType">The type of the page to be replaced with. Must be a subclass of ContentPage.</typeparam>
+    /// <param name="shell">The Shell instance used for navigation.</param>
+    /// <param name="parameter">An optional parameter to pass to the new page. Default is null.</param>
+    /// <param name="animate">A boolean value indicating whether to animate the replacement operation. Default is true.</param>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     public static Task ReplaceAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
         where TPageType : ContentPage
     {
@@ -72,20 +59,14 @@ public static class ShellInjectExtensions
     {
         return ShellInjectNavigation.Instance.PopModalStackAsync(shell, data, animate);
     }
-
+    
     /// <summary>
-    /// Pops the navigation stack back to the specified page type
+    /// Pops pages from the navigation stack until the specified page type is reached.
     /// </summary>
-    /// <param name="shell"></param>
-    /// <param name="pageType"></param>
-    /// <param name="parameter"></param>
-    /// <returns></returns>
-    [Obsolete("Use PopToAsync<TPageType> instead.")]
-    public static Task PopToAsync(this Shell shell, Type pageType, object? parameter = null)
-    {
-        return ShellInjectNavigation.Instance.PopToAsync(shell, pageType, parameter);
-    }
-
+    /// <typeparam name="TPageType">The type of the target page to pop to. Must be a subclass of ContentPage.</typeparam>
+    /// <param name="shell">The Shell instance used for navigation.</param>
+    /// <param name="parameter">An optional parameter to pass to the target page. Default is null.</param>
+    /// <returns>A Task representing the asynchronous pop operation.</returns>
     public static Task PopToAsync<TPageType>(this Shell shell, object? parameter = null)
     {
         return ShellInjectNavigation.Instance.PopToAsync(shell, typeof(TPageType), parameter);
@@ -111,8 +92,7 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the tab navigation.</param>
     /// <param name="popToRootFirst">A flag indicating whether to pop to the root of the navigation stack before changing the tab.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null,
-        bool popToRootFirst = true)
+    public static Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null, bool popToRootFirst = true)
     {
         return ShellInjectNavigation.Instance.ChangeTabAsync(shell, tabIndex, parameter, popToRootFirst);
     }
@@ -126,11 +106,9 @@ public static class ShellInjectExtensions
     /// <param name="animate">A boolean value indicating whether to animate the page transitions. Default is true.</param>
     /// <param name="animateAllPages">A boolean value indicating whether to animate all pages in the navigation stack. Default is false.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null,
-        bool animate = true, bool animateAllPages = false)
+    public static Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null, bool animate = true, bool animateAllPages = false)
     {
-        return ShellInjectNavigation.Instance.PushMultiStackAsync(shell, pageTypes, parameter, animate,
-            animateAllPages);
+        return ShellInjectNavigation.Instance.PushMultiStackAsync(shell, pageTypes, parameter, animate, animateAllPages);
     }
 
     /// <summary>
@@ -147,37 +125,25 @@ public static class ShellInjectExtensions
     }
 
     /// <summary>
-    /// Pushes a modal page
+    /// Pushes a modal page of the specified type onto the navigation stack asynchronously.
     /// </summary>
-    /// <param name="shell"></param>
-    /// <param name="pageType"></param>
-    /// <param name="tParameter"></param>
-    /// <param name="animate"></param>
-    /// <returns></returns>
-    [Obsolete("Use PushModalAsync<TPageType> instead.")]
-    public static Task PushModalAsync(this Shell shell, Type pageType, object? tParameter = null, bool animate = true)
-    {
-        return ShellInjectNavigation.Instance.PushModalAsync(shell, pageType, tParameter, animate);
-    }
-
+    /// <typeparam name="TPageType">The type of the modal page to be pushed. Must be a subclass of ContentPage.</typeparam>
+    /// <param name="shell">The Shell instance used for navigation.</param>
+    /// <param name="tParameter">An optional parameter to pass to the pushed page. Default is null.</param>
+    /// <param name="animate">A boolean value indicating whether to animate the push operation. Default is true.</param>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     public static Task PushModalAsync<TPageType>(this Shell shell, object? tParameter = null, bool animate = true)
     {
         return ShellInjectNavigation.Instance.PushModalAsync(shell, typeof(TPageType), tParameter, animate);
     }
-
+    
     /// <summary>
-    /// Looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method
+    /// Sends data to a specified page of the given type on the navigation stack using the ReverseDataReceivedAsync method
     /// </summary>
-    /// <param name="shell"></param>
-    /// <param name="page"></param>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    [Obsolete("Use SendDataToPageAsync<TPageType> instead.")]
-    public static Task SendDataToPageAsync(this Shell shell, Type? page, object? data = null)
-    {
-        return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, page, data);
-    }
-
+    /// <typeparam name="TPageType">The type of the page to which the data should be sent. Must be a subclass of ContentPage.</typeparam>
+    /// <param name="shell">The Shell instance used to locate the target page.</param>
+    /// <param name="data">The data to be sent to the target page. Default is null.</param>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     public static Task SendDataToPageAsync<TPageType>(this Shell shell, object? data = null)
     {
         return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, typeof(TPageType), data);
