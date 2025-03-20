@@ -170,6 +170,9 @@ internal class ShellInjectNavigation
                 BindingContext: IShellInjectShellViewModel viewModel
             })
         {
+            
+            await viewModel.OnPageAppearedAsync();
+
             if (_navigationParameter is not null)
             {
                 if (_isReverseNavigation)
@@ -180,10 +183,6 @@ internal class ShellInjectNavigation
                 {
                     await viewModel.DataReceivedAsync(_navigationParameter);
                 }
-            }
-            else
-            {
-                await viewModel.OnPageAppearedAsync();
             }
         }
 

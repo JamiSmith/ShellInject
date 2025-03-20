@@ -19,7 +19,7 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>3.1.3</PackageVersion>
+        <PackageVersion>3.1.4</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2024</Copyright>
@@ -36,7 +36,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>
             • Implemented OnPageAppearing for automatic handling during navigation or first load
-            • DataReceivedAsync triggers when data is passed; PageAppeared triggers otherwise
+            • DataReceivedAsync triggers when data is passed;
             • Added async event handling to avoid lost exceptions
             • Introduced safe event detachment and Injector class for easier service access
         </PackageReleaseNotes>
