@@ -6,7 +6,6 @@
              xmlns:extensions="clr-namespace:ShellInject.Extensions;assembly=ShellInject"
              xmlns:contentViews="clr-namespace:Sample.ContentViews"
              extensions:ShellInjectPageExtensions.ViewModelType="{x:Type vm:DetailsViewModel}"
-             extensions:ShellInjectPageExtensions.OnAppearingCommand="{Binding OnAppearingCommand}"
              x:DataType="vm:DetailsViewModel"
              Title="Details Page"
              BackgroundColor="White"

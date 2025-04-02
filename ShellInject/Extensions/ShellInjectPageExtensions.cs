@@ -1,5 +1,5 @@
-using System.Windows.Input;
 using CommunityToolkit.Maui.Views;
+using ShellInject.Interfaces;
 
 namespace ShellInject.Extensions;
 
@@ -8,6 +8,28 @@ namespace ShellInject.Extensions;
 /// </summary>
 public static class ShellInjectPageExtensions
 {
+    // A private helper class to store event handlers so they can be detached later.
+    private class PageLifecycleToken
+    {
+        public EventHandler AppearingHandler { get; }
+        public EventHandler DisappearingHandler { get; }
+
+        public PageLifecycleToken(EventHandler appearing, EventHandler disappearing)
+        {
+            AppearingHandler = appearing;
+            DisappearingHandler = disappearing;
+        }
+    }
+
+    // An attached property to hold the lifecycle token object on each page.
+    private static readonly BindableProperty PageLifecycleTokenProperty =
+        BindableProperty.CreateAttached(
+            "PageLifecycleToken",
+            typeof(PageLifecycleToken),
+            typeof(ShellInjectPageExtensions),
+            null);
+
+    
     // Attached Properties for ViewModel Type
 
     /// <summary>
@@ -67,13 +89,69 @@ public static class ShellInjectPageExtensions
                     layout.BindingContext = viewModelInstance;
                     break;
             }
+            
+            // Detach old handlers if they existed
+            if (bindable is not ContentPage bindablePage)
+            {
+                return;
+            }
+            
+            var oldToken = (PageLifecycleToken)bindablePage.GetValue(PageLifecycleTokenProperty);
+            if (oldToken != null)
+            {
+                bindablePage.Appearing -= oldToken.AppearingHandler;
+                bindablePage.Disappearing -= oldToken.DisappearingHandler;
+                bindablePage.SetValue(PageLifecycleTokenProperty, null);
+            }
+
+            // If a new ViewModelType is being set, attach new handlers
+            if (bindablePage.BindingContext is not IShellInjectShellViewModel vmInstance)
+            {
+                return;
+            }
+            
+            // Attach new event handlers
+            EventHandler appearingHandler = (s, e) =>
+            {
+                if (vmInstance is IShellInjectShellViewModel vm)
+                {
+                    vm.OnAppearing();
+                }
+            };
+            EventHandler disappearingHandler = (s, e) =>
+            {
+                if (vmInstance is IShellInjectShellViewModel vm)
+                {
+                    vm.OnDisAppearing();
+                }
+            };
+
+            // Register them on the page
+            bindablePage.Appearing += appearingHandler;
+            bindablePage.Disappearing += disappearingHandler;
+
+            // Store them in the attached property so we can unregister later
+            var newToken = new PageLifecycleToken(appearingHandler, disappearingHandler);
+            bindablePage.SetValue(PageLifecycleTokenProperty, newToken);
         }
         catch (Exception)
         {
             // ignored
         }
     }
-    
+
+    /// <summary>
+    /// Resolves and creates an instance of the specified ViewModel type.
+    /// </summary>
+    /// <param name="viewModelType">The type of the ViewModel to be resolved.</param>
+    /// <returns>
+    /// An object instance of the specified ViewModel type. May return an existing instance
+    /// if registered in the dependency injection container or create a new one.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the ViewModel instance cannot be created either because the type is invalid
+    /// or the ServiceProvider is not properly configured.
+    /// </exception>
     private static object ResolveViewModel(Type viewModelType)
     {
         if (Injector.ServiceProvider is not { } provider)
@@ -99,82 +177,22 @@ public static class ShellInjectPageExtensions
     }
 
     /// <summary>
-    /// Gets the ViewModel type of a bindable object.
+    /// Retrieves the value of the ViewModelType attached property from the specified bindable object.
     /// </summary>
-    /// <param name="obj">The bindable object.</param>
-    /// <returns>The ViewModel type.</returns>
+    /// <param name="obj">The bindable object from which to retrieve the ViewModelType.</param>
+    /// <returns>The type of the ViewModel set on the bindable object.</returns>
     public static Type GetViewModelType(BindableObject obj)
     {
         return (Type)obj.GetValue(ViewModelTypeProperty);
     }
-    
+
+    /// <summary>
+    /// Sets the value of the ViewModelType attached property for the specified bindable object.
+    /// </summary>
+    /// <param name="obj">The bindable object on which the ViewModelType property is being set.</param>
+    /// <param name="value">The Type value to be set for the ViewModelType property.</param>
     public static void SetViewModelType(BindableObject obj, Type value)
     {
         obj.SetValue(ViewModelTypeProperty, value);
-    }
-    
-    // Attached Properties for OnAppearing Events
-
-    /// <summary>
-    /// Provides an attached property for defining a command to be executed when a page appears.
-    /// </summary>
-    public static readonly BindableProperty OnAppearingCommandProperty =
-        BindableProperty.CreateAttached(
-            "OnAppearingCommand",
-            typeof(ICommand),
-            typeof(ShellInjectPageExtensions),
-            null,
-            propertyChanged: OnOnAppearingCommandChanged);
-
-    /// <summary>
-    /// Gets the attached command to be executed when a page appears.
-    /// </summary>
-    /// <param name="obj">The bindable object.</param>
-    /// <returns>The command to be executed.</returns>
-    public static ICommand GetOnAppearingCommand(BindableObject obj)
-    {
-        return (ICommand)obj.GetValue(OnAppearingCommandProperty);
-    }
-
-    /// <summary>
-    /// Sets the OnAppearingCommand property on a bindable object.
-    /// <param name="obj">The bindable object.</param>
-    /// <param name="value">The ICommand to set as the OnAppearingCommand property.</param>
-    /// </summary>
-    public static void SetOnAppearingCommand(BindableObject obj, ICommand value)
-    {
-        obj.SetValue(OnAppearingCommandProperty, value);
-    }
-
-    /// <summary>
-    /// Triggers when the value of the OnAppearingCommand attached property changes.
-    /// </summary>
-    /// <param name="bindable">The object on which the property is attached.</param>
-    /// <param name="oldValue">The old value of the property.</param>
-    /// <param name="newValue">The new value of the property.</param>
-    private static void OnOnAppearingCommandChanged(BindableObject bindable, object oldValue, object newValue)
-    {
-        if (bindable is not ContentPage page) 
-            return;
-        
-        if (oldValue is ICommand)
-            page.Appearing -= OnPageAppearing;
-
-        if (newValue is ICommand)
-            page.Appearing += OnPageAppearing;
-    }
-
-    /// <summary>
-    /// Executes a command when a page appears.
-    /// </summary>
-    /// <param name="sender">The object triggering the event.</param>
-    /// <param name="e">The event arguments.</param>
-    private static void OnPageAppearing(object? sender, EventArgs e)
-    {
-        if (sender is not BindableObject bindable) 
-            return;
-        
-        var command = GetOnAppearingCommand(bindable);
-        command.Execute(null);
     }
 }

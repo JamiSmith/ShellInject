@@ -11,16 +11,21 @@ public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
 {
     [ObservableProperty] private string _reverseDataText = string.Empty;
 
-    public override Task OnPageDisAppearingAsync()
+    public override void OnAppearing()
     {
-        return base.OnPageDisAppearingAsync();
+        base.OnAppearing();
     }
 
-    public override Task OnPageAppearedAsync()
+    public override void OnDisAppearing()
     {
-        return base.OnPageAppearedAsync();
+        base.OnDisAppearing();
     }
 
+    public override Task OnAppearedAsync()
+    {
+        return base.OnAppearedAsync();
+    }
+    
     public override Task ReverseDataReceivedAsync(object? parameter)
     {
         if (parameter is string text)
