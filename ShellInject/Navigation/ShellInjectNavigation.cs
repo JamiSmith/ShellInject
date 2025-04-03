@@ -293,8 +293,14 @@ internal class ShellInjectNavigation
     }
 
     /// <summary>
-    /// Pops all pages from the navigation stack and returns to the root page.
+    /// Navigates back to the specified page in the navigation stack.
+    /// If the specified page is not found, navigates back to the root.
     /// </summary>
+    /// <typeparam name="TResult">The type of the data to be passed to the target page or handled after navigation.</typeparam>
+    /// <param name="shell">The Shell instance used for navigation.</param>
+    /// <param name="pageType">The type of the page to navigate back to.</param>
+    /// <param name="tResult">The result or data to be passed during navigation.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the shell or pageType is null.</exception>
     internal async Task PopToAsync<TResult>(Shell shell, Type pageType, TResult tResult)
     {
         var navigationStack = shell.Navigation.NavigationStack;
@@ -432,12 +438,7 @@ internal class ShellInjectNavigation
         if (Activator.CreateInstance(pageType) is ContentPage contentPage)
         {
             ShellSetup(shell);
-            //
-            // var route = RegisterRoute(pageType);
-            // Routing.RegisterRoute(route, pageType);
-            // Shell.SetPresentationMode(contentPage, PresentationMode.Modal);
-            // await shell.GoToAsync(route, animate);
-            //
+
              await shell.Navigation.PushModalAsync(contentPage, animate);
             if (contentPage.BindingContext is IShellInjectShellViewModel vm)
             {
@@ -460,21 +461,21 @@ internal class ShellInjectNavigation
     /// <returns></returns>
     internal async Task SendDataToPageAsync(Shell shell, Type? page, object? data = null)
     {
-        if (page == null)
+        if (page == null || shell.Navigation == null)
         {
             return;
         }
-
-        var navigationStack = shell?.Navigation?.NavigationStack;
+    
+        var navigationStack = shell.Navigation.NavigationStack;
         if (navigationStack == null || navigationStack.Count == 0)
         {
             return;
         }
-
+    
         var pageToSendDataTo = navigationStack
             .Where(p => p != null)
             .FirstOrDefault(p => p.GetType().Name == page.Name);
-
+    
         if (pageToSendDataTo is { BindingContext: IShellInjectShellViewModel vm })
         {
             await vm.ReverseDataReceivedAsync(data);

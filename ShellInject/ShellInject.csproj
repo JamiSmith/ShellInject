@@ -35,8 +35,8 @@
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>
-            • Implemented OnPageAppearing for automatic handling during navigation or first load
-            • DataReceivedAsync triggers when data is passed;
+            • Implemented automatic handling of OnAppearing and OnDissappearing methods
+            • DataReceivedAsync triggers when data is passed, OnPageAppearedAsync triggers everytime navigation happens;
             • Added async event handling to avoid lost exceptions
             • Introduced safe event detachment and Injector class for easier service access
         </PackageReleaseNotes>

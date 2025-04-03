@@ -7,7 +7,7 @@ With a single-line setup, ShellInject enhances maintainability and reduces boile
 ## Setup
 
 ### MauiProgram.cs
-To enable ShellInject and integrate its features into your app, add the `.UseShellInject()` line of code in your `MauiProgram.cs` file after registering your app’s services and interfaces:
+To enable ShellInject and integrate its features into your app, add the `.UseShellInject()` line of code in your `MauiProgram.cs`:
 ```
  var builder = MauiApp.CreateBuilder();
     builder
@@ -18,18 +18,17 @@ To enable ShellInject and integrate its features into your app, add the `.UseShe
  return builder.Build();
 ```
 
-Note: For now, it is recommended to add the `.UseShellInject()` after all your services have been registered.
-
 ## Usage
 
 ### ViewModels
 Ensure your ViewModels inherit from `ShellInjectViewModel` to handle navigation events and parameter passing. You can override the following methods based on your needs:
 
+- `OnAppearedAsync()` – Triggered everytime a page is navigated to.
 - `DataReceivedAsync(object? parameter)` – Triggered when data is passed to the ViewModel.
 - `ReverseDataReceivedAsync(object? parameter)` – Handles data returned when navigating back from a page.
 
+ShellInject now handles the following methods out of the box. Just override them in your viewmodel.
 
-These two methods require the xaml markup shown below in order for them to trigger.
 - `OnAppearing()` – Called when the page is about to appear.
 - `OnDisappearing()` – Called when the page is about to disappear.
 
@@ -40,13 +39,6 @@ In your `ContentPage.xaml` file, specify the ViewModel to bind by setting the `V
 ```
 xmlns:ez="clr-namespace:ShellInject;assembly=ShellInject"
 ez:ShellInjectPageExtensions.ViewModelType="{x:Type vm:MainViewModel}"
-```
-
-Optionally you can set up listeners for OnAppearing and OnDisappearing events
-
-```
-ez:ShellInjectPageExtensions.OnAppearingCommand="{Binding OnAppearingCommand}"
-ez:ShellInjectPageExtensions.OnDisappearingCommand="{Binding OnDisAppearingCommand}"
 ```
 
 
@@ -104,11 +96,18 @@ This method looks for the specified Page on the stack and sends the data using t
 ```
 SendDataToPageAsync<TPageType>(someData)
 ```
+Note: this method is now Deprecated.
+
+## ServiceProvider
+Retrieving services manually, you can use the following:
+```
+Injector.GetRequiredService<ISampleService>();
+Injector.GetService<ISampleService>();
+```
 
 
 ***TODO List:***
 
 1. Update Sample Project
 2. Add Unit Tests
-3. Setup CI/CD
 
