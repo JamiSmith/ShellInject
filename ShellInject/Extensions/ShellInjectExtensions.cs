@@ -144,6 +144,7 @@ public static class ShellInjectExtensions
     /// <param name="shell">The Shell instance used to locate the target page.</param>
     /// <param name="data">The data to be sent to the target page. Default is null.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
+    [Obsolete("This method is deprecated.", false)]
     public static Task SendDataToPageAsync<TPageType>(this Shell shell, object? data = null)
     {
         return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, typeof(TPageType), data);

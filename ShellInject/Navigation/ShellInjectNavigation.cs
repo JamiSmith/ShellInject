@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using ShellInject.Constants;
@@ -14,7 +13,6 @@ internal class ShellInjectNavigation
 {
     private List<Popup> _popupStack = [];
     private EventHandler<ShellNavigatedEventArgs>? _navigatedHandler;
-    private EventHandler<ShellNavigatingEventArgs>? _navigatingHandler;
 
     /// <summary>
     /// Provides a singleton instance of the <see cref="ShellInjectNavigation"/> class for Shell-based navigation in a Maui application.
@@ -64,18 +62,6 @@ internal class ShellInjectNavigation
             }
         };
         shell.Navigated += _navigatedHandler;
-        
-        _navigatingHandler = async void (s, e) =>
-        {
-            try
-            {
-                await ShellOnNavigating(s, e);
-            }
-            catch
-            {
-                // just catch it
-            }
-        };
 
         _shell = shell;
     }
@@ -89,11 +75,6 @@ internal class ShellInjectNavigation
         if (_navigatedHandler is not null)
         {
             shell.Navigated -= _navigatedHandler;
-        }
-
-        if (_navigatingHandler is not null)
-        {
-            shell.Navigating -= _navigatingHandler;
         }
         
         _shell = null;
@@ -136,26 +117,7 @@ internal class ShellInjectNavigation
 
         return prefixedRouteName;
     }
-
-    /// <summary>
-    /// Handles navigation actions occurring before the navigation process is completed within a Shell application.
-    /// </summary>
-    /// <param name="sender">The object that initiated the navigation, typically a Shell instance.</param>
-    /// <param name="e">Event data providing information about the navigation event.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    private async Task ShellOnNavigating(object? sender, ShellNavigatingEventArgs e)
-    {
-        if (sender is not Shell shell)
-        {
-            return;
-        }
-        var currentPage = shell.CurrentPage;
-        if (currentPage is not null && currentPage.BindingContext is IShellInjectShellViewModel vm)
-        {
-            await vm.OnPageDisAppearingAsync();
-        }
-    }
-
+    
     /// <summary>
     /// Handles navigation events triggered by the Shell after navigation has occurred.
     /// Updates the view model with navigation data or invokes relevant lifecycle methods.
@@ -170,9 +132,8 @@ internal class ShellInjectNavigation
                 BindingContext: IShellInjectShellViewModel viewModel
             })
         {
+            await viewModel.OnAppearedAsync();
             
-            await viewModel.OnPageAppearedAsync();
-
             if (_navigationParameter is not null)
             {
                 if (_isReverseNavigation)
@@ -185,7 +146,7 @@ internal class ShellInjectNavigation
                 }
             }
         }
-
+    
         // Reset parameters
         _navigationParameter = null;
         _isReverseNavigation = false;
@@ -332,8 +293,14 @@ internal class ShellInjectNavigation
     }
 
     /// <summary>
-    /// Pops all pages from the navigation stack and returns to the root page.
+    /// Navigates back to the specified page in the navigation stack.
+    /// If the specified page is not found, navigates back to the root.
     /// </summary>
+    /// <typeparam name="TResult">The type of the data to be passed to the target page or handled after navigation.</typeparam>
+    /// <param name="shell">The Shell instance used for navigation.</param>
+    /// <param name="pageType">The type of the page to navigate back to.</param>
+    /// <param name="tResult">The result or data to be passed during navigation.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the shell or pageType is null.</exception>
     internal async Task PopToAsync<TResult>(Shell shell, Type pageType, TResult tResult)
     {
         var navigationStack = shell.Navigation.NavigationStack;
@@ -451,7 +418,7 @@ internal class ShellInjectNavigation
         {
             if (tParameter != null)
             {
-                _ = vm.DataReceivedAsync(tParameter);
+                await vm.DataReceivedAsync(tParameter);
             }
         }
 
@@ -472,12 +439,12 @@ internal class ShellInjectNavigation
         {
             ShellSetup(shell);
 
-            await shell.Navigation.PushModalAsync(contentPage, animate);
+             await shell.Navigation.PushModalAsync(contentPage, animate);
             if (contentPage.BindingContext is IShellInjectShellViewModel vm)
             {
                 if (tParameter != null)
                 {
-                    _ = vm.DataReceivedAsync(tParameter);
+                    await vm.DataReceivedAsync(tParameter);
                 }
             }
 
@@ -492,29 +459,27 @@ internal class ShellInjectNavigation
     /// <param name="page"></param>
     /// <param name="data"></param>
     /// <returns></returns>
-    internal Task SendDataToPageAsync(Shell shell, Type? page, object? data = null)
+    internal async Task SendDataToPageAsync(Shell shell, Type? page, object? data = null)
     {
-        if (page == null)
+        if (page == null || shell.Navigation == null)
         {
-            return Task.CompletedTask;
+            return;
         }
-
-        var navigationStack = shell?.Navigation?.NavigationStack;
+    
+        var navigationStack = shell.Navigation.NavigationStack;
         if (navigationStack == null || navigationStack.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
-
+    
         var pageToSendDataTo = navigationStack
             .Where(p => p != null)
             .FirstOrDefault(p => p.GetType().Name == page.Name);
-
+    
         if (pageToSendDataTo is { BindingContext: IShellInjectShellViewModel vm })
         {
-            vm.ReverseDataReceivedAsync(data);
+            await vm.ReverseDataReceivedAsync(data);
         }
-
-        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -537,7 +502,7 @@ internal class ShellInjectNavigation
         }
 
         _popupStack.Add(popupPage);
-        _ = shell.CurrentPage.ShowPopupAsync(popupPage);
+        await shell.CurrentPage.ShowPopupAsync(popupPage);
 
         if (popupPage.BindingContext is ShellInjectViewModel vm)
         {

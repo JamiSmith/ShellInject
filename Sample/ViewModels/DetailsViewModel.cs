@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Sample.Services;
 using ShellInject;
 
 namespace Sample.ViewModels;
@@ -14,16 +15,16 @@ public partial class DetailsViewModel : BaseViewModel
         base.OnAppearing();
     }
 
-    public override Task OnPageAppearedAsync()
+    public override void OnDisAppearing()
     {
-        return base.OnPageAppearedAsync();
+        base.OnDisAppearing();
     }
 
-    public override Task OnPageDisAppearingAsync()
+    public override Task OnAppearedAsync()
     {
-        return base.OnPageDisAppearingAsync();
+        return base.OnAppearedAsync();
     }
-
+    
     public override Task DataReceivedAsync(object? parameter)
     {
         if (parameter is string data)

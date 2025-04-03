@@ -23,6 +23,7 @@ public static class ShellInjectMauiBuilderExtensions
         builder.ConfigureLifecycleEvents(life =>
         {
 #if IOS
+            // Sets up a temporary event to trigger the OnPageAppearedAsync when FinishedLaunching happens in AppDelegate
             life.AddiOS(i => i.FinishedLaunching((app, launchOptions) =>
             {
                 if (Application.Current?.MainPage is not Shell shell)
@@ -47,6 +48,8 @@ public static class ShellInjectMauiBuilderExtensions
             }));
 #endif
 #if ANDROID 
+            // Sets up a temporary event to trigger the OnPageAppearedAsync when OnCreate happens in android activity
+
             life.AddAndroid(a => a.OnCreate((activity, state) =>
             {
                 if (Application.Current?.MainPage is not Shell shell)
@@ -81,13 +84,13 @@ public static class ShellInjectMauiBuilderExtensions
         {
             return;
         }
-
+    
         var firstPage = shell.CurrentPage;
         if (firstPage?.BindingContext is IShellInjectShellViewModel vm)
         {
-            await vm.OnPageAppearedAsync();
+            await vm.OnAppearedAsync();
         }
-
+    
         // Only need this once, detach the event
         if (_navigatedHandler is not null)
         {

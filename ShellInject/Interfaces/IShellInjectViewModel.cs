@@ -26,16 +26,15 @@ public interface IShellInjectShellViewModel
     /// Executes operations asynchronously when the page appears.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task OnPageAppearedAsync();
-
-    /// <summary>
-    /// Handles operations asynchronously when the page is disappearing.
-    /// </summary>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    Task OnPageDisAppearingAsync();
+    Task OnAppearedAsync();
 
     // /// <summary>
     // /// OnAppearing Method
     // /// </summary>
     void OnAppearing();
+
+    /// <summary>
+    /// Executes tasks or operations when the view is about to disappear from the screen.
+    /// </summary>
+    void OnDisAppearing();
 }
