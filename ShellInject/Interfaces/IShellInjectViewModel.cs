@@ -5,6 +5,14 @@
 /// </summary>
 public interface IShellInjectShellViewModel
 {
+    bool IsInitialized { get; set; }
+
+    /// <summary>
+    /// Executes initialization logic for the view model asynchronously.
+    /// </summary>
+    /// <returns>A task representing the asynchronous initialization operation.</returns>
+    Task InitializedAsync();
+
     /// <summary>
     /// Sends data to the view model asynchronously.
     /// </summary>

@@ -24,8 +24,9 @@ To enable ShellInject and integrate its features into your app, add the `.UseShe
 Ensure your ViewModels inherit from `ShellInjectViewModel` to handle navigation events and parameter passing. You can override the following methods based on your needs:
 
 - `OnAppearedAsync()` – Triggered everytime a page is navigated to.
-- `DataReceivedAsync(object? parameter)` – Triggered when data is passed to the ViewModel.
-- `ReverseDataReceivedAsync(object? parameter)` – Handles data returned when navigating back from a page.
+- `InitializedAsync()` - Invoked once when the viewmodel is loaded for the first time.
+- `DataReceivedAsync(object? parameter)` – Triggered when data is passed to the ViewModel (forward navigation).
+- `ReverseDataReceivedAsync(object? parameter)` – Handles data returned when navigating back from a page (back navigation).
 
 ShellInject now handles the following methods out of the box. Just override them in your viewmodel.
 
