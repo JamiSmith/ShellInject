@@ -19,7 +19,7 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>3.1.5</PackageVersion>
+        <PackageVersion>3.1.6</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2025</Copyright>
@@ -35,10 +35,7 @@
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>
-            • Implemented automatic handling of OnAppearing and OnDissappearing methods
-            • DataReceivedAsync triggers when data is passed, OnPageAppearedAsync triggers everytime navigation happens;
-            • Added async event handling to avoid lost exceptions
-            • Introduced safe event detachment and Injector class for easier service access
+            • Added an overridden InitializedAsync method, which is invoked once when the viewmodel is loaded for the first time.
         </PackageReleaseNotes>
 
 

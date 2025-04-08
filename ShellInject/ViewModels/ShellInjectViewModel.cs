@@ -8,6 +8,14 @@ namespace ShellInject;
 /// It inherits from ObservableObject and implements the IShellInjectShellViewModel interface.
 public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShellViewModel
 {
+    public bool IsInitialized { get; private set; }
+    
+    bool IShellInjectShellViewModel.IsInitialized
+    {
+        get => IsInitialized;
+        set => IsInitialized = value;
+    }
+    
     /// when the view associated with the view model appears on the screen.
     public ICommand OnAppearingCommand { get; }
 
@@ -29,6 +37,14 @@ public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShell
         OnAppearingCommand = new Command(OnAppearing);
         OnDisAppearingCommand = new Command(OnDisAppearing);
     }
+
+    /// <summary>
+    /// An asynchronous method that can be overridden to handle initialization logic for the view model.
+    /// This method is executed when the view model requires initialization, allowing derived classes
+    /// to implement their specific setup processes or tasks.
+    /// </summary>
+    /// <returns>A Task representing the asynchronous operation.</returns>
+    public virtual Task InitializedAsync() => Task.CompletedTask;
     
     /// <summary>
     /// Sends data to the view model asynchronously.

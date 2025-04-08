@@ -133,6 +133,12 @@ internal class ShellInjectNavigation
             })
         {
             await viewModel.OnAppearedAsync();
+
+            if (!viewModel.IsInitialized)
+            {
+                await viewModel.InitializedAsync();
+                viewModel.IsInitialized = true;
+            }
             
             if (_navigationParameter is not null)
             {

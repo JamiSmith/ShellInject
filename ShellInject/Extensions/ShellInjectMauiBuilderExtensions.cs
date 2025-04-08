@@ -89,6 +89,12 @@ public static class ShellInjectMauiBuilderExtensions
         if (firstPage?.BindingContext is IShellInjectShellViewModel vm)
         {
             await vm.OnAppearedAsync();
+            
+            if (!vm.IsInitialized)
+            {
+                await vm.InitializedAsync();
+                vm.IsInitialized = true;
+            }
         }
     
         // Only need this once, detach the event

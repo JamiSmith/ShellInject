@@ -25,7 +25,12 @@ public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
     {
         return base.OnAppearedAsync();
     }
-    
+
+    public override Task InitializedAsync()
+    {
+        return base.InitializedAsync();
+    }
+
     public override Task ReverseDataReceivedAsync(object? parameter)
     {
         if (parameter is string text)
