@@ -192,7 +192,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
     /// <param name="tParameter"></param>
     /// <param name="animate"></param>
     /// <typeparam name="TParameter"></typeparam>
-    public async Task ReplaceAsync<TParameter>(Shell shell, Type? pageType, TParameter? tParameter, bool animate = true)
+    public virtual async Task ReplaceAsync<TParameter>(Shell shell, Type? pageType, TParameter? tParameter, bool animate = true)
     {
         if (pageType == null)
         {
@@ -202,7 +202,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
         var isAlreadyCurrentPage = shell.CurrentPage?.GetType().Name == pageType.Name;
         RegisterRoute(pageType);
         ShellSetup(shell);
-        NavigationParameter = tParameter;
+        SetNavigationParameter(tParameter);
         await shell.Navigation.PopToRootAsync(false);
         await shell.GoToAsync($"//{pageType.Name}", animate: animate);
         await Task.Delay(500); // awaiting this so the page's binding context has time to set 
@@ -237,7 +237,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
             await shell.Navigation.PopToRootAsync(false);
         }
 
-        NavigationParameter = tParameter;
+        SetNavigationParameter(tParameter);
 
         if (shell.Items[0]?.Items?.Count < tabIndex)
         {
@@ -267,7 +267,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
         ShellSetup(shell);
 
         IsReverseNavigation = true;
-        NavigationParameter = tResult;
+        SetNavigationParameter(tResult);
         await shell.GoToAsync("..", animate);
 
         ShellTeardown(shell);
@@ -300,7 +300,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
             {
                 ShellSetup(shell);
                 IsReverseNavigation = true;
-                NavigationParameter = data;
+                SetNavigationParameter(data);
                 await shell.GoToAsync(".."); // Pop the modal and pass Data
                 ShellTeardown(shell);
             }
@@ -340,7 +340,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
                         {
                             ShellSetup(shell);
                             IsReverseNavigation = true;
-                            NavigationParameter = tResult;
+                            SetNavigationParameter(tResult);
                             animate = true;
                         }
 
@@ -370,7 +370,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
         ShellSetup(shell);
 
         IsReverseNavigation = true;
-        NavigationParameter = tResult;
+        SetNavigationParameter(tResult);
         await shell.Navigation.PopToRootAsync(animate);
 
         ShellTeardown(shell);
@@ -401,7 +401,7 @@ internal class ShellInjectNavigation : IShellInjectNavigation
             if (type == lastState)
             {
                 ShellSetup(shell);
-                NavigationParameter = tParameter;
+                SetNavigationParameter(tParameter);
             }
 
             await shell.GoToAsync(route, type == lastState ? animate : animateAllPages);
