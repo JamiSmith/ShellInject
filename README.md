@@ -105,10 +105,3 @@ Retrieving services manually, you can use the following:
 Injector.GetRequiredService<ISampleService>();
 Injector.GetService<ISampleService>();
 ```
-
-
-***TODO List:***
-
-1. Update Sample Project
-2. Add Unit Tests
-

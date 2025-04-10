@@ -32,7 +32,7 @@ public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShell
     /// The ShellInjectViewModel class is a base class that provides common functionality for view models in the ShellInjectViewModel namespace.
     /// It inherits from ObservableObject and implements the IShellInjectViewModel interface.
     /// </summary>
-    protected ShellInjectViewModel()
+    public ShellInjectViewModel()
     {
         OnAppearingCommand = new Command(OnAppearing);
         OnDisAppearingCommand = new Command(OnDisAppearing);
