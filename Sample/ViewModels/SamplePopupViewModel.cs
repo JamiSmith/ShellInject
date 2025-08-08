@@ -7,20 +7,19 @@ namespace Sample.ViewModels;
 
 public partial class SamplePopupViewModel : BaseViewModel
 {
-    [ObservableProperty] private string _message = string.Empty;
+    [ObservableProperty] private string _message = "Some empty string";
     
-    public override Task DataReceivedAsync(object? parameter)
+    public override async Task DataReceivedAsync(object? parameter)
     {
         if (parameter is not string message)
         {
-            return Task.CompletedTask;
+            return;
         }
-        
-        Message = message;
-        
-        return Task.CompletedTask;
-    }
 
+        await Task.Delay(500);
+        Message = message;
+    }
+    
     [RelayCommand]
     private Task OnDismissAsync()
     {

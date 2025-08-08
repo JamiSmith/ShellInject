@@ -24,6 +24,7 @@ public static class ShellInjectExtensions
     
     /// <summary>
     /// Replaces the current page in the navigation stack with a new page of the specified type asynchronously.
+    /// Typically used when there is a Flyout menu and wanting to replace the main content
     /// </summary>
     /// <typeparam name="TPageType">The type of the page to be replaced with. Must be a subclass of ContentPage.</typeparam>
     /// <param name="shell">The Shell instance used for navigation.</param>
@@ -155,11 +156,12 @@ public static class ShellInjectExtensions
     /// </summary>
     /// <param name="shell"></param>
     /// <param name="data"></param>
+    /// <param name="onError"></param>
     /// <typeparam name="TPopup"></typeparam>
     /// <returns></returns>
-    public static Task ShowPopupAsync<TPopup>(this Shell shell, object? data = null)
+    public static Task ShowPopupAsync<TPopup>(this Shell shell, object? data = null, Action<Exception>? onError = null) where TPopup : Popup
     {
-        return ShellInjectNavigation.Instance.ShowPopupAsync<TPopup>(shell, data);
+        return ShellInjectNavigation.Instance.ShowPopupAsync<TPopup>(shell, data, onError);
     }
     
     /// <summary>

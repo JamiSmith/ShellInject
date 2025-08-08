@@ -61,10 +61,10 @@ public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
     }
     
     [RelayCommand]
-    private Task OnShowPopupAsync()
+    private async Task OnShowPopupAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.ShowPopupAsync<SamplePopup>("This is a Popup and this text is also from parameter passing using ShellInject.");
+        await Shell.Current.ShowPopupAsync<SamplePopup>("This is a Popup and this text is also from parameter passing using ShellInject.");
     }
     
     [RelayCommand]
@@ -72,5 +72,11 @@ public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
     {
         ReverseDataText = string.Empty;
         return Shell.Current.PushModalWithNavigationAsync(new SamplePage2());
+    }
+
+    [RelayCommand]
+    private async Task ReplaceContent()
+    {
+        await Shell.Current.ReplaceAsync<FlyoutPageThree>("Content Replaced");
     }
 }

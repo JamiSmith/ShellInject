@@ -4,15 +4,39 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Sample"
+    xmlns:contentPages="clr-namespace:Sample.ContentPages"
     FlyoutBehavior="Flyout"
     Title="Sample">
     
-    <FlyoutItem Title="Home">
+    <FlyoutItem 
+        Route="MainPage"
+        Title="Home">
         <ShellContent
             Title="Home"
             ContentTemplate="{DataTemplate local:MainPage}"
             Route="MainPage" />
     </FlyoutItem>
-
-
+    
+    <FlyoutItem
+        Route="TabbedPage"
+        Title="Tabbed Page">
+        <Tab>
+            <ShellContent
+                Title="Tab One"
+                ContentTemplate="{DataTemplate contentPages:TabbedPageOne}" />
+            <ShellContent
+                Title="Tab Two"
+                ContentTemplate="{DataTemplate contentPages:TabbedPageTwo}" />
+        </Tab>
+    </FlyoutItem>
+    
+    <FlyoutItem 
+        Route="FlyoutPageThree"
+        Title="FlyoutItem 3">
+        <ShellContent
+            Title="FlyoutItem 3"
+            ContentTemplate="{DataTemplate contentPages:FlyoutPageThree}"
+            Route="FlyoutPageThree" />
+    </FlyoutItem>
+    
 </Shell>

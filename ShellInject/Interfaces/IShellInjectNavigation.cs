@@ -23,6 +23,6 @@ public interface IShellInjectNavigation
     Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter, bool animate = true);
     Task PushModalAsync(Shell shell, Type pageType, object? tParameter, bool animate = true);
     Task SendDataToPageAsync(Shell shell, Type? page, object? data = null);
-    Task ShowPopupAsync<TPopup>(Shell shell, object? data);
+    Task ShowPopupAsync<TPopup>(Shell shell, object? data, Action<Exception>? onError = null) where TPopup : Popup;
     Task DismissPopupAsync<TPopup>(Shell shell, object? data) where TPopup : Popup;
 }

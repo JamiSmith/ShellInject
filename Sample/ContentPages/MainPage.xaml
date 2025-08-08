@@ -23,6 +23,9 @@
             <Button 
                 Text="Modal with Navigation"
                 Command="{Binding NavigateTestCommand}" />
+            <Button 
+                Text="Replace Content"
+                Command="{Binding ReplaceContentCommand}" />
             <Label
                 HorizontalOptions="Center"
                 TextColor="Black"

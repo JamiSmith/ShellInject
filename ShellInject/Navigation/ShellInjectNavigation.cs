@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using ShellInject.Constants;
 using ShellInject.Interfaces;
@@ -11,7 +11,7 @@ namespace ShellInject.Navigation;
 /// </summary>
 internal class ShellInjectNavigation : IShellInjectNavigation
 {
-    private readonly List<Popup> _popupStack = [];
+    private static readonly List<Popup> PopupStack = [];
     
     /// <summary>
     /// Provides a singleton instance of the <see cref="ShellInjectNavigation"/> class for Shell-based navigation in a Maui application.
@@ -38,31 +38,35 @@ internal class ShellInjectNavigation : IShellInjectNavigation
     /// in a Shell-based navigation architecture. It is set during the Shell setup process, and should be null when the Shell is not available.
     /// </remarks>
     public virtual Shell? Shell { get; set; }
-    
+
     /// <summary>
     /// Sets up the shell for navigation.
     /// </summary>
     /// <param name="shell">The Shell instance to be set up.</param>
+    /// <param name="addNavigatedHandler"></param>
     /// <exception cref="NullReferenceException">Thrown if the given shell is null.</exception>
-    private void ShellSetup(Shell shell)
+    private void ShellSetup(Shell shell, bool addNavigatedHandler = true)
     {
         if (shell == null)
         {
             throw new NullReferenceException(ShellInjectConstants.ShellNotFoundText);
         }
 
-        NavigatedHandler = async void (s, e) =>
+        if (addNavigatedHandler)
         {
-            try
+            NavigatedHandler = async void (s, e) =>
             {
-                await OnShellNavigatedAsync(s, e);
-            }
-            catch
-            {
-               // just catch it
-            }
-        };
-        shell.Navigated += NavigatedHandler;
+                try
+                {
+                    await OnShellNavigatedAsync(s, e);
+                }
+                catch
+                {
+                    // just catch it
+                }
+            };
+            shell.Navigated += NavigatedHandler;
+        }
 
         Shell = shell;
     }
@@ -199,18 +203,17 @@ internal class ShellInjectNavigation : IShellInjectNavigation
             return;
         }
 
-        var isAlreadyCurrentPage = shell.CurrentPage?.GetType().Name == pageType.Name;
         RegisterRoute(pageType);
-        ShellSetup(shell);
+        ShellSetup(shell, false);
         SetNavigationParameter(tParameter);
         await shell.Navigation.PopToRootAsync(false);
         await shell.GoToAsync($"//{pageType.Name}", animate: animate);
-        await Task.Delay(500); // awaiting this so the page's binding context has time to set 
+        await Task.Delay(300); // awaiting this so the page's binding context has time to set 
         ShellTeardown(shell);
 
         // If the Page wanting to replace is the same as the current page, then try triggering the DataReceivedAsync method
         // since Shell won't trigger the OnNavigating event in this scenario
-        if (isAlreadyCurrentPage)
+        if (shell.CurrentPage?.GetType().Name == pageType.Name)
         {
             if (shell.CurrentPage is ContentPage { BindingContext: IShellInjectShellViewModel viewModel })
             {
@@ -232,25 +235,29 @@ internal class ShellInjectNavigation : IShellInjectNavigation
     {
         ShellSetup(shell);
 
-        if (popToRootFirst)
+        var currentShellSection = shell.CurrentItem?.CurrentItem;
+        if (currentShellSection == null || currentShellSection?.Items?.Count <= tabIndex)
+        {
+            ShellTeardown(shell);
+            return; 
+        }
+
+        if (popToRootFirst && shell.Navigation?.NavigationStack?.Count > 1)
         {
             await shell.Navigation.PopToRootAsync(false);
         }
-
-        SetNavigationParameter(tParameter);
-
-        if (shell.Items[0]?.Items?.Count < tabIndex)
+        
+        if (currentShellSection != null)
         {
-            return;
+            currentShellSection.CurrentItem = currentShellSection.Items?[tabIndex];
         }
-
-        var shellSections = shell.Items[0]?.Items;
-        if (shellSections != null)
+        
+        await Task.Delay(50); // Wait briefly to let Shell update CurrentPage
+        if (shell.CurrentPage?.BindingContext is IShellInjectShellViewModel vm)
         {
-            var itemTo = shellSections[tabIndex];
-            shell.CurrentItem = itemTo;
+            await vm.DataReceivedAsync(tParameter);
         }
-
+    
         ShellTeardown(shell);
     }
 
@@ -421,12 +428,12 @@ internal class ShellInjectNavigation : IShellInjectNavigation
     /// <exception cref="NullReferenceException">Thrown if the given shell is null or the given page is null.</exception>
     public async Task PushModalWithNavigation<TParameter>(Shell shell, ContentPage page, TParameter? tParameter, bool animate = true)
     {
-        ShellSetup(shell);
-
         if (page == null)
         {
             throw new NullReferenceException(ShellInjectConstants.NullContentPageExceptionText);
         }
+        
+        ShellSetup(shell);
 
         await shell.Navigation.PushModalAsync(new NavigationPage(page), animate);
         if (page.BindingContext is IShellInjectShellViewModel vm)
@@ -502,9 +509,10 @@ internal class ShellInjectNavigation : IShellInjectNavigation
     /// </summary>
     /// <param name="shell"></param>
     /// <param name="data"></param>
+    /// <param name="onError"></param>
     /// <typeparam name="TPopup"></typeparam>
     /// <returns></returns>
-    public async Task ShowPopupAsync<TPopup>(Shell shell, object? data)
+    public async Task ShowPopupAsync<TPopup>(Shell shell, object? data, Action<Exception>? onError = null) where TPopup : Popup
     {
         if (shell.CurrentPage is null)
         {
@@ -516,13 +524,30 @@ internal class ShellInjectNavigation : IShellInjectNavigation
             return;
         }
 
-        _popupStack.Add(popupPage);
-        await shell.CurrentPage.ShowPopupAsync(popupPage);
-
-        if (popupPage.BindingContext is ShellInjectViewModel vm)
+        PopupStack.Add(popupPage);
+        
+        void OnPopupOpened(object? sender, EventArgs e)
         {
-            await vm.DataReceivedAsync(data);
+            popupPage.Opened -= OnPopupOpened;
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    if (popupPage.BindingContext is ShellInjectViewModel vm)
+                    {
+                        await vm.DataReceivedAsync(data);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    onError?.Invoke(ex);
+                }
+            });
         }
+
+        popupPage.Opened += OnPopupOpened;
+        await shell.CurrentPage.ShowPopupAsync(popupPage);
     }
 
     /// <summary>
@@ -533,36 +558,48 @@ internal class ShellInjectNavigation : IShellInjectNavigation
     /// <typeparam name="TPopup"></typeparam>
     public async Task DismissPopupAsync<TPopup>(Shell shell, object? data) where TPopup : Popup
     {
-        var typedPopups = _popupStack.OfType<TPopup>().ToList();
-        foreach (var typedPopup in typedPopups)
+        var typedPopups = PopupStack?.OfType<TPopup>().ToList() ?? [];
+        if (typedPopups.Count == 0)
         {
-            try
+            return;
+        }
+        
+        var latestPopup = typedPopups.Last();
+        
+        try
+        {
+            if (data is not null)
             {
-                if (data is not null)
+                EventHandler? handler = null;
+                handler = async (sender, args) =>
                 {
-                    EventHandler<PopupClosedEventArgs>? handler = null;
-                    handler = async (_, _) =>
+                    latestPopup.Closed -= handler;
+                        
+                    if (shell.CurrentPage.BindingContext is ShellInjectViewModel vm)
                     {
-                        typedPopup.Closed -= handler;
-                        if (shell.CurrentPage.BindingContext is ShellInjectViewModel vm)
+                        try
                         {
                             await vm.ReverseDataReceivedAsync(data);
                         }
-                    };
-
-                    typedPopup.Closed += handler;
-                }
+                        catch (Exception)
+                        {
+                            // just catch it
+                        }
+                    }
+                };
+                    
+                latestPopup.Closed += handler;
+            }
                 
-                await typedPopup.CloseAsync();
-            }
-            catch (ObjectDisposedException)
-            {
-                // Popup is already disposed, safe to ignore
-            }
-            finally
-            {
-                _popupStack.Remove(typedPopup);
-            }
+            await latestPopup.CloseAsync();
+        }
+        catch (ObjectDisposedException)
+        {
+            // Popup is already disposed, safe to ignore
+        }
+        finally
+        {
+            PopupStack?.Remove(latestPopup);
         }
     }
 }
