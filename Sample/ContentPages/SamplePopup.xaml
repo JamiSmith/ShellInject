@@ -12,6 +12,7 @@
         <VerticalStackLayout
             Padding="16"
             Spacing="16"
+            HeightRequest="200"
             BackgroundColor="White">
             <Label
                 HorizontalTextAlignment="Center"
