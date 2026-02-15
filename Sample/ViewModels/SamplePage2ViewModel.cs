@@ -9,6 +9,6 @@ public partial class SamplePage2ViewModel : BaseViewModel
     [RelayCommand]
     private Task OnPushAsync()
     {
-        return Shell.Current.PushAsync<SamplePage3>();
+        return ShellNavigation.PushAsync<SamplePage3>();
     }
 }

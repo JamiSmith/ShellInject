@@ -39,6 +39,6 @@ public partial class DetailsViewModel : BaseViewModel
     [RelayCommand]
     private Task OnPopWithParameterAsync()
     {
-        return Shell.Current.PopAsync("This text if from Details Page");
+        return ShellNavigation.PopAsync(parameter: "This text if from Details Page");
     }
 }

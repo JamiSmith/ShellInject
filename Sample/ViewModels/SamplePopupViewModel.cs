@@ -23,6 +23,6 @@ public partial class SamplePopupViewModel : BaseViewModel
     [RelayCommand]
     private Task OnDismissAsync()
     {
-        return Shell.Current.DismissPopupAsync<SamplePopup>("Popup Text results");
+        return ShellNavigation.DismissPopupAsync<SamplePopup>(data: "Popup Text results");
     }
 }

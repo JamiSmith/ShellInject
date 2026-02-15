@@ -50,33 +50,33 @@ public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
     private Task OnShowDetailsAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.PushAsync<DetailsPage>("Hello from Main Page!");
+        return ShellNavigation.PushAsync<DetailsPage>(parameter: "Hello from Main Page!");
     }
     
     [RelayCommand]
     private Task OnPushModalAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.PushModalAsync<DetailsPage>("This is a modal");
+        return ShellNavigation.PushModalAsync<DetailsPage>(parameter: "This is a modal");
     }
     
     [RelayCommand]
     private async Task OnShowPopupAsync()
     {
         ReverseDataText = string.Empty;
-        await Shell.Current.ShowPopupAsync<SamplePopup>("This is a Popup and this text is also from parameter passing using ShellInject.");
+        await ShellNavigation.ShowPopupAsync<SamplePopup>(data: "This is a Popup and this text is also from parameter passing using ShellInject.");
     }
     
     [RelayCommand]
     private Task OnNavigateTestAsync()
     {
         ReverseDataText = string.Empty;
-        return Shell.Current.PushModalWithNavigationAsync(new SamplePage2());
+        return ShellNavigation.PushModalWithNavigationAsync(page: new SamplePage2());
     }
 
     [RelayCommand]
     private async Task ReplaceContent()
     {
-        await Shell.Current.ReplaceAsync<FlyoutPageThree>("Content Replaced");
+        await ShellNavigation.ReplaceAsync<FlyoutPageThree>(parameter: "Content Replaced");
     }
 }

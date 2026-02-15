@@ -8,6 +8,6 @@ public partial class TabbedPageOneViewModel : BaseViewModel
     [RelayCommand]
     private async Task ShowTabTwo()
     {
-        await Shell.Current.ChangeTabAsync(1, "Tab Swapped");
+        await ShellNavigation.ChangeTabAsync(tabIndex: 1, parameter: "Tab Swapped");
     }
 }
