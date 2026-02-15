@@ -7,6 +7,9 @@ namespace ShellInject.Services;
 /// </summary>
 internal class ShellInjectInitializer : IMauiInitializeService
 {
+    private const string ServiceProviderNotInitializedMessage =
+        "ShellInject has not been constructed or is not properly configured.";
+
     /// <summary>
     /// A static variable holding the root <see cref="IServiceProvider"/> instance
     /// used for resolving dependencies in the ShellInject dependency injection system.
@@ -27,39 +30,34 @@ internal class ShellInjectInitializer : IMauiInitializeService
     /// </exception>
     internal static T GetRequiredService<T>() where T : notnull
     {
-        if (ServiceProvider is null)
+        var provider = GetServiceProvider();
+        var service = provider.GetService<T>();
+        if (service is null)
         {
-            throw new InvalidOperationException("ShellInject has not been constructed or is not properly configured.");
+            throw new InvalidOperationException($"No service for type {typeof(T).FullName} has been registered.");
         }
 
-        return ServiceProvider.GetRequiredService<T>();
+        return service;
     }
 
     /// <summary>
     /// Retrieves a registered service of the specified type from the dependency injection system.
-    /// Throws an <see cref="InvalidOperationException"/> if the service provider is uninitialized
-    /// or if the specified service of type <typeparamref name="T"/> has not been registered.
+    /// Returns null if the specified service is not registered.
     /// </summary>
     /// <typeparam name="T">The type of the service to resolve.</typeparam>
-    /// <returns>The resolved service instance of type <typeparamref name="T"/>.</returns>
+    /// <returns>The resolved service instance of type <typeparamref name="T"/> or null if not registered.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the service provider has not been initialized or if a service for the specified
-    /// type <typeparamref name="T"/> is not registered in the DI container.
+    /// Thrown when the service provider has not been initialized.
     /// </exception>
-    internal static T GetService<T>() where T : notnull
+    internal static T? GetService<T>()
     {
-        if (ServiceProvider is null)
-        {
-            throw new InvalidOperationException("ShellInject has not been constructed or is not properly configured.");
-        }
+        var provider = GetServiceProvider();
+        return provider.GetService<T>();
+    }
 
-        var service = ServiceProvider.GetService<T>();
-        if (service is null)
-        {
-            throw new InvalidOperationException($"No service for type {typeof(T).Name} has been registered.");
-        }
-
-        return service;
+    private static IServiceProvider GetServiceProvider()
+    {
+        return ServiceProvider ?? throw new InvalidOperationException(ServiceProviderNotInitializedMessage);
     }
 
     // NOTE:  -Called automatically by MAUI after the final service provider is built:

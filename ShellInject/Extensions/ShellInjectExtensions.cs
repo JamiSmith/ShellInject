@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
-using ShellInject.Navigation;
+using CommunityToolkit.Maui.Views;
 
 namespace ShellInject;
 
@@ -16,10 +15,11 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the pushed page. Default is null.</param>
     /// <param name="animate">A boolean value indicating whether to animate the push operation. Default is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
+    [Obsolete("Use ShellNavigation.PushAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PushAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
         where TPageType : ContentPage
     {
-        return ShellInjectNavigation.Instance.PushAsync(shell, typeof(TPageType), parameter, animate);
+        return ShellNavigation.PushAsync<TPageType>(shell, parameter, animate);
     }
     
     /// <summary>
@@ -31,10 +31,11 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the new page. Default is null.</param>
     /// <param name="animate">A boolean value indicating whether to animate the replacement operation. Default is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
+    [Obsolete("Use ShellNavigation.ReplaceAsync instead. Shell extension methods are deprecated.", false)]
     public static Task ReplaceAsync<TPageType>(this Shell shell, object? parameter = null, bool animate = true)
         where TPageType : ContentPage
     {
-        return ShellInjectNavigation.Instance.ReplaceAsync(shell, typeof(TPageType), parameter, animate);
+        return ShellNavigation.ReplaceAsync<TPageType>(shell, parameter, animate);
     }
 
     /// <summary>
@@ -44,9 +45,10 @@ public static class ShellInjectExtensions
     /// <param name="parameter">The optional parameter to pass to the previous page.</param>
     /// <param name="animate">Whether to animate the navigation transition. The default is true.</param>
     /// <returns>A task that represents the asynchronous operation of popping the page. The task completes when the navigation is finished.</returns>
+    [Obsolete("Use ShellNavigation.PopAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PopAsync(this Shell shell, object? parameter = null, bool animate = true)
     {
-        return ShellInjectNavigation.Instance.PopAsync(shell, parameter, animate);
+        return ShellNavigation.PopAsync(shell, parameter, animate);
     }
     
     /// <summary>
@@ -56,9 +58,10 @@ public static class ShellInjectExtensions
     /// <param name="data"></param>
     /// <param name="animate"></param>
     /// <returns></returns>
+    [Obsolete("Use ShellNavigation.PopModalStackAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PopModalStackAsync(this Shell shell, object? data = null, bool animate = true)
     {
-        return ShellInjectNavigation.Instance.PopModalStackAsync(shell, data, animate);
+        return ShellNavigation.PopModalStackAsync(shell, data, animate);
     }
     
     /// <summary>
@@ -68,9 +71,10 @@ public static class ShellInjectExtensions
     /// <param name="shell">The Shell instance used for navigation.</param>
     /// <param name="parameter">An optional parameter to pass to the target page. Default is null.</param>
     /// <returns>A Task representing the asynchronous pop operation.</returns>
+    [Obsolete("Use ShellNavigation.PopToAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PopToAsync<TPageType>(this Shell shell, object? parameter = null)
     {
-        return ShellInjectNavigation.Instance.PopToAsync(shell, typeof(TPageType), parameter);
+        return ShellNavigation.PopToAsync<TPageType>(shell, parameter);
     }
 
     /// <summary>
@@ -80,9 +84,10 @@ public static class ShellInjectExtensions
     /// <param name="parameter"></param>
     /// <param name="animate">True to animate the navigation, false otherwise. Default is true.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Obsolete("Use ShellNavigation.PopToRootAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PopToRootAsync(this Shell shell, object? parameter = null, bool animate = true)
     {
-        return ShellInjectNavigation.Instance.PopToRootAsync(shell, parameter, animate);
+        return ShellNavigation.PopToRootAsync(shell, parameter, animate);
     }
 
     /// <summary>
@@ -93,9 +98,10 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the tab navigation.</param>
     /// <param name="popToRootFirst">A flag indicating whether to pop to the root of the navigation stack before changing the tab.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
+    [Obsolete("Use ShellNavigation.ChangeTabAsync instead. Shell extension methods are deprecated.", false)]
     public static Task ChangeTabAsync(this Shell shell, int tabIndex, object? parameter = null, bool popToRootFirst = true)
     {
-        return ShellInjectNavigation.Instance.ChangeTabAsync(shell, tabIndex, parameter, popToRootFirst);
+        return ShellNavigation.ChangeTabAsync(shell, tabIndex, parameter, popToRootFirst);
     }
 
     /// <summary>
@@ -107,9 +113,10 @@ public static class ShellInjectExtensions
     /// <param name="animate">A boolean value indicating whether to animate the page transitions. Default is true.</param>
     /// <param name="animateAllPages">A boolean value indicating whether to animate all pages in the navigation stack. Default is false.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
+    [Obsolete("Use ShellNavigation.PushMultiStackAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PushMultiStackAsync(this Shell shell, List<Type> pageTypes, object? parameter = null, bool animate = true, bool animateAllPages = false)
     {
-        return ShellInjectNavigation.Instance.PushMultiStackAsync(shell, pageTypes, parameter, animate, animateAllPages);
+        return ShellNavigation.PushMultiStackAsync(shell, pageTypes, parameter, animate, animateAllPages);
     }
 
     /// <summary>
@@ -120,9 +127,10 @@ public static class ShellInjectExtensions
     /// <param name="parameter">An optional parameter to pass to the page.</param>
     /// <param name="animate">A flag indicating whether to animate the transition. The default value is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
+    [Obsolete("Use ShellNavigation.PushModalWithNavigationAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PushModalWithNavigationAsync(this Shell shell, ContentPage page, object? parameter = null, bool animate = true)
     {
-        return ShellInjectNavigation.Instance.PushModalWithNavigation(shell, page, parameter, animate);
+        return ShellNavigation.PushModalWithNavigationAsync(shell, page, parameter, animate);
     }
 
     /// <summary>
@@ -133,9 +141,11 @@ public static class ShellInjectExtensions
     /// <param name="tParameter">An optional parameter to pass to the pushed page. Default is null.</param>
     /// <param name="animate">A boolean value indicating whether to animate the push operation. Default is true.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
+    [Obsolete("Use ShellNavigation.PushModalAsync instead. Shell extension methods are deprecated.", false)]
     public static Task PushModalAsync<TPageType>(this Shell shell, object? tParameter = null, bool animate = true)
+        where TPageType : ContentPage
     {
-        return ShellInjectNavigation.Instance.PushModalAsync(shell, typeof(TPageType), tParameter, animate);
+        return ShellNavigation.PushModalAsync<TPageType>(shell, tParameter, animate);
     }
     
     /// <summary>
@@ -145,10 +155,11 @@ public static class ShellInjectExtensions
     /// <param name="shell">The Shell instance used to locate the target page.</param>
     /// <param name="data">The data to be sent to the target page. Default is null.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    [Obsolete("This method is deprecated.", false)]
+    [Obsolete("Use ShellNavigation.SendDataToPageAsync instead. Shell extension methods are deprecated.", false)]
     public static Task SendDataToPageAsync<TPageType>(this Shell shell, object? data = null)
+        where TPageType : ContentPage
     {
-        return ShellInjectNavigation.Instance.SendDataToPageAsync(shell, typeof(TPageType), data);
+        return ShellNavigation.SendDataToPageAsync<TPageType>(shell, data);
     }
 
     /// <summary>
@@ -159,9 +170,10 @@ public static class ShellInjectExtensions
     /// <param name="onError"></param>
     /// <typeparam name="TPopup"></typeparam>
     /// <returns></returns>
+    [Obsolete("Use ShellNavigation.ShowPopupAsync instead. Shell extension methods are deprecated.", false)]
     public static Task ShowPopupAsync<TPopup>(this Shell shell, object? data = null, Action<Exception>? onError = null) where TPopup : Popup
     {
-        return ShellInjectNavigation.Instance.ShowPopupAsync<TPopup>(shell, data, onError);
+        return ShellNavigation.ShowPopupAsync<TPopup>(shell, data, onError);
     }
     
     /// <summary>
@@ -171,8 +183,9 @@ public static class ShellInjectExtensions
     /// <param name="data"></param>
     /// <typeparam name="TPopup"></typeparam>
     /// <returns></returns>
+    [Obsolete("Use ShellNavigation.DismissPopupAsync instead. Shell extension methods are deprecated.", false)]
     public static Task DismissPopupAsync<TPopup>(this Shell shell, object? data = null) where TPopup : Popup
     {
-        return ShellInjectNavigation.Instance.DismissPopupAsync<TPopup>(shell, data);
+        return ShellNavigation.DismissPopupAsync<TPopup>(shell, data);
     }
 }

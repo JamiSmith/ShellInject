@@ -8,4 +8,4 @@
 - [x] Update tests for new behavior and remove outdated tests
 - [x] Clean up unused or obsolete code
 - [x] Update Sample app to use the new navigation API
-- [ ] Update README with new usage and deprecation notes
+- [x] Update README with new usage and deprecation notes

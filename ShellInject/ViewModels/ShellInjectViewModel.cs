@@ -4,10 +4,14 @@ using ShellInject.Interfaces;
 
 namespace ShellInject;
 
-/// The ShellInjectViewModel class is a base class that provides common functionality for view models in the ShellInjectViewModel namespace.
-/// It inherits from ObservableObject and implements the IShellInjectShellViewModel interface.
-public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShellViewModel
+/// <summary>
+/// Base view model that provides ShellInject lifecycle hooks and data handling.
+/// </summary>
+public partial class ShellInjectViewModel : ObservableObject, IShellInjectShellViewModel
 {
+    /// <summary>
+    /// Gets a value indicating whether <see cref="InitializedAsync"/> has completed.
+    /// </summary>
     public bool IsInitialized { get; private set; }
     
     bool IShellInjectShellViewModel.IsInitialized
@@ -16,11 +20,13 @@ public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShell
         set => IsInitialized = value;
     }
     
-    /// when the view associated with the view model appears on the screen.
+    /// <summary>
+    /// Gets the command executed when the view is appearing.
+    /// </summary>
     public ICommand OnAppearingCommand { get; }
 
     /// <summary>
-    /// Gets or sets the command that is executed when the page is disappearing.
+    /// Gets the command that is executed when the page is disappearing.
     /// </summary>
     /// <remarks>
     /// This command is executed when the page is about to disappear from the screen.
@@ -29,8 +35,7 @@ public partial class ShellInjectViewModel : ObservableObject,  IShellInjectShell
     public ICommand OnDisAppearingCommand { get; } 
     
     /// <summary>
-    /// The ShellInjectViewModel class is a base class that provides common functionality for view models in the ShellInjectViewModel namespace.
-    /// It inherits from ObservableObject and implements the IShellInjectViewModel interface.
+    /// Initializes a new instance of the <see cref="ShellInjectViewModel"/> class.
     /// </summary>
     public ShellInjectViewModel()
     {

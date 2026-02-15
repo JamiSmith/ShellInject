@@ -24,8 +24,10 @@ public abstract class BaseNavigationTests
         var shellContent = new ShellContent { Content = MockPage };
         var shellSection = new ShellSection();
         shellSection.Items.Add(shellContent);
+        shellSection.CurrentItem = shellContent;
         var shellItem = new ShellItem();
         shellItem.Items.Add(shellSection);
+        shellItem.CurrentItem = shellSection;
         testShell.Items.Add(shellItem);
         testShell.CurrentItem = shellItem;
         TestShell = testShell;

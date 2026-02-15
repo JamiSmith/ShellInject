@@ -29,6 +29,18 @@ public static class ShellInjectPageExtensions
             typeof(ShellInjectPageExtensions),
             null);
 
+    private static void DetachPageLifecycleHandlers(ContentPage page)
+    {
+        if (page.GetValue(PageLifecycleTokenProperty) is not PageLifecycleToken token)
+        {
+            return;
+        }
+
+        page.Appearing -= token.AppearingHandler;
+        page.Disappearing -= token.DisappearingHandler;
+        page.SetValue(PageLifecycleTokenProperty, null);
+    }
+
     
     // Attached Properties for ViewModel Type
 
@@ -51,6 +63,12 @@ public static class ShellInjectPageExtensions
     /// <param name="newValue">The new value of the property.</param>
     private static void OnViewModelTypePropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
+        var bindablePage = bindable as ContentPage;
+        if (bindablePage is not null)
+        {
+            DetachPageLifecycleHandlers(bindablePage);
+        }
+
         if (newValue is not Type viewModelType)
         {
             return;
@@ -90,18 +108,9 @@ public static class ShellInjectPageExtensions
                     break;
             }
             
-            // Detach old handlers if they existed
-            if (bindable is not ContentPage bindablePage)
+            if (bindablePage is null)
             {
                 return;
-            }
-            
-            var oldToken = (PageLifecycleToken)bindablePage.GetValue(PageLifecycleTokenProperty);
-            if (oldToken != null)
-            {
-                bindablePage.Appearing -= oldToken.AppearingHandler;
-                bindablePage.Disappearing -= oldToken.DisappearingHandler;
-                bindablePage.SetValue(PageLifecycleTokenProperty, null);
             }
 
             // If a new ViewModelType is being set, attach new handlers
@@ -113,16 +122,24 @@ public static class ShellInjectPageExtensions
             // Attach new event handlers
             EventHandler appearingHandler = (s, e) =>
             {
-                if (vmInstance is IShellInjectShellViewModel vm)
+                try
                 {
-                    vm.OnAppearing();
+                    vmInstance.OnAppearing();
+                }
+                catch
+                {
+                    // ignored
                 }
             };
             EventHandler disappearingHandler = (s, e) =>
             {
-                if (vmInstance is IShellInjectShellViewModel vm)
+                try
                 {
-                    vm.OnDisAppearing();
+                    vmInstance.OnDisAppearing();
+                }
+                catch
+                {
+                    // ignored
                 }
             };
 
@@ -162,16 +179,7 @@ public static class ShellInjectPageExtensions
                        $"Unable to create instance of ViewModel. Type: {viewModelType.FullName}.");
         }
         
-        // Check the services for any registered instances of the specified type
-        var existingVm = provider.GetService(viewModelType);
-        if (existingVm != null)
-        {
-            // Found a registered instance (singleton/scoped/transient).
-            return existingVm;
-        }
-
-        // No existing service; create a new instance with DI injection support:
-        return ActivatorUtilities.CreateInstance(provider, viewModelType)
+        return ActivatorUtilities.GetServiceOrCreateInstance(provider, viewModelType)
                ?? throw new InvalidOperationException($"Unable to create instance of ViewModel. Type: {viewModelType.FullName}.");
 
     }

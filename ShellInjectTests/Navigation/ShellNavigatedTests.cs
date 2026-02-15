@@ -15,7 +15,7 @@ public class ShellNavigatedTests : BaseNavigationTests
         var navMock = new Mock<ShellInjectNavigation> { CallBase = true };
         navMock.SetupProperty(p => p.Shell, TestShell);
 
-        await navMock.Object.OnShellNavigatedAsync(new object(), NavigatedEventArgsPush);
+        await navMock.Object.OnShellNavigatedAsync(TestShell, NavigatedEventArgsPush);
 
         MockShellViewModel.Verify(vm => vm.OnAppearedAsync(), Times.Once);
     }
@@ -30,7 +30,7 @@ public class ShellNavigatedTests : BaseNavigationTests
         var navMock = new Mock<ShellInjectNavigation> { CallBase = true };
         navMock.SetupProperty(p => p.Shell, TestShell);
 
-        await navMock.Object.OnShellNavigatedAsync(new object(), NavigatedEventArgsPush);
+        await navMock.Object.OnShellNavigatedAsync(TestShell, NavigatedEventArgsPush);
 
         MockShellViewModel.Verify(vm => vm.InitializedAsync(), Times.Once);
     }
@@ -46,9 +46,9 @@ public class ShellNavigatedTests : BaseNavigationTests
         var navMock = new Mock<ShellInjectNavigation> { CallBase = true };
         navMock.SetupProperty(p => p.Shell, TestShell);
 
-        await navMock.Object.OnShellNavigatedAsync(new object(), NavigatedEventArgsPush);
+        await navMock.Object.OnShellNavigatedAsync(TestShell, NavigatedEventArgsPush);
         // Call again to test the IsInitialized is being set properly and not calling the method twice
-        await navMock.Object.OnShellNavigatedAsync(new object(), NavigatedEventArgsPush);
+        await navMock.Object.OnShellNavigatedAsync(TestShell, NavigatedEventArgsPush);
 
         MockShellViewModel.Verify(vm => vm.InitializedAsync(), Times.Once);
     }
@@ -64,7 +64,7 @@ public class ShellNavigatedTests : BaseNavigationTests
         navMock.SetupProperty(p => p.Shell, TestShell);
         navMock.SetupProperty(p => p.NavigationParameter, TestNavigationParameter);
 
-        await navMock.Object.OnShellNavigatedAsync(new object(), NavigatedEventArgsPush);
+        await navMock.Object.OnShellNavigatedAsync(TestShell, NavigatedEventArgsPush);
 
         MockShellViewModel.Verify(vm => vm.DataReceivedAsync(TestNavigationParameter), Times.Once);
     }
@@ -81,7 +81,7 @@ public class ShellNavigatedTests : BaseNavigationTests
         navMock.SetupProperty(p => p.NavigationParameter, TestNavigationParameter);
         navMock.SetupProperty(p => p.IsReverseNavigation, true);
 
-        await navMock.Object.OnShellNavigatedAsync(new object(), NavigatedEventArgsPush);
+        await navMock.Object.OnShellNavigatedAsync(TestShell, NavigatedEventArgsPush);
 
         MockShellViewModel.Verify(vm => vm.ReverseDataReceivedAsync(TestNavigationParameter), Times.Once);
     }
@@ -97,7 +97,7 @@ public class ShellNavigatedTests : BaseNavigationTests
         var navMock = new Mock<ShellInjectNavigation> { CallBase = true };
         navMock.SetupProperty(p => p.Shell, TestShell);
 
-        await navMock.Object.OnShellNavigatedAsync(new object(), NavigatedEventArgsPush);
+        await navMock.Object.OnShellNavigatedAsync(TestShell, NavigatedEventArgsPush);
 
         MockShellViewModel.Verify(vm => vm.ReverseDataReceivedAsync(null), Times.Never);
         MockShellViewModel.Verify(vm => vm.DataReceivedAsync(null), Times.Never);

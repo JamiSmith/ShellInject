@@ -45,63 +45,64 @@ ez:ShellInjectPageExtensions.ViewModelType="{x:Type vm:MainViewModel}"
 
 ## Navigation
 
-ShellInject provides extension methods to simplify navigation between pages and passing parameters between ViewModels:
+ShellInject provides a static navigation API via `ShellNavigation` (uses `Shell.Current` by default). Existing `Shell` extension methods remain but are deprecated and forward to the static API.
 
 **Example:**
 ```csharp
-await Shell.Current.PushAsync<DetailsPage>(new { id = 123, name = "John" });
+await ShellNavigation.PushAsync<DetailsPage>(parameter: new { id = 123, name = "John" });
 ```
 
 Available navigation methods:
 
 ***Pushing:***
 ```
-PushAsync<TPageType>(someData)
-PushMultiStackAsync(pageTypes, someData)
+ShellNavigation.PushAsync<TPageType>(parameter)
+ShellNavigation.PushMultiStackAsync(pageTypes, parameter)
 ```
 
 ***Modals:***
 ```
-PushModalWithNavigationAsync(contentPage, someData)
-PushModalAsync<TPageType>(someData)
+ShellNavigation.PushModalWithNavigationAsync(page, parameter)
+ShellNavigation.PushModalAsync<TPageType>(parameter)
 ```
 
 ***Popping:***
 ```
-PopAsync(someData)
-PopModalStackAsync(someData)
-PopToAsync<TPageType>(someData)
-PopToRootAsync(someData)
+ShellNavigation.PopAsync(parameter)
+ShellNavigation.PopModalStackAsync(data)
+ShellNavigation.PopToAsync<TPageType>(parameter)
+ShellNavigation.PopToRootAsync(parameter)
 ```
 
 ***Popups:***
 
 ```
-ShowPopupAsync<TPopup>(someData)
-DismissPopupAsync<TPopup>(someData)
+ShellNavigation.ShowPopupAsync<TPopup>(data)
+ShellNavigation.DismissPopupAsync<TPopup>(data)
 ```
 
 ***Replacing Root Pages in a Flyout Menu:***
 ```
-ReplaceAsync<TPageType>(someData)
+ShellNavigation.ReplaceAsync<TPageType>(parameter)
 ```
 
 ***Changing Tabs:***
 ```
-ChangeTabAsync(tabIndex, someData)
+ShellNavigation.ChangeTabAsync(tabIndex, parameter)
 ```
 
 ## Helper methods:
 
 This method looks for the specified Page on the stack and sends the data using the ReverseDataReceivedAsync method.
 ```
-SendDataToPageAsync<TPageType>(someData)
+ShellNavigation.SendDataToPageAsync<TPageType>(data)
 ```
-Note: this method is now Deprecated.
+Note: the `Shell` extension method is deprecated. Use the static API instead.
 
 ## ServiceProvider
 Retrieving services manually, you can use the following:
 ```
-Injector.GetRequiredService<ISampleService>();
-Injector.GetService<ISampleService>();
+var requiredService = Injector.GetRequiredService<ISampleService>();
+var optionalService = Injector.GetService<ISampleService>();
 ```
+Note: `GetService` returns null if the service is not registered.

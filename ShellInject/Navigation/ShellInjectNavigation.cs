@@ -144,10 +144,19 @@ internal class ShellInjectNavigation : IShellInjectNavigation
     /// <returns>A task representing the asynchronous operation.</returns>
     public virtual async Task OnShellNavigatedAsync(object? sender, ShellNavigatedEventArgs e)
     {
-        if ((Shell?.CurrentItem?.CurrentItem as IShellSectionController)?.PresentedPage is ContentPage
-            {
-                BindingContext: IShellInjectShellViewModel viewModel
-            })
+        if (sender is not Shell shell)
+        {
+            return;
+        }
+
+        await HandleShellNavigatedAsync(shell);
+    }
+
+    private async Task HandleShellNavigatedAsync(Shell shell)
+    {
+        var presentedPage = (shell.CurrentItem?.CurrentItem as IShellSectionController)?.PresentedPage;
+        var page = presentedPage ?? shell.CurrentPage;
+        if (page is ContentPage { BindingContext: IShellInjectShellViewModel viewModel })
         {
             await viewModel.OnAppearedAsync();
 
@@ -209,17 +218,8 @@ internal class ShellInjectNavigation : IShellInjectNavigation
         await shell.Navigation.PopToRootAsync(false);
         await shell.GoToAsync($"//{pageType.Name}", animate: animate);
         await Task.Delay(300); // awaiting this so the page's binding context has time to set 
+        await HandleShellNavigatedAsync(shell);
         ShellTeardown(shell);
-
-        // If the Page wanting to replace is the same as the current page, then try triggering the DataReceivedAsync method
-        // since Shell won't trigger the OnNavigating event in this scenario
-        if (shell.CurrentPage?.GetType().Name == pageType.Name)
-        {
-            if (shell.CurrentPage is ContentPage { BindingContext: IShellInjectShellViewModel viewModel })
-            {
-                await viewModel.DataReceivedAsync(tParameter);
-            }
-        }
     }
 
     /// <summary>
