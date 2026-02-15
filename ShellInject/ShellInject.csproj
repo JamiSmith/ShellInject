@@ -19,7 +19,7 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>10.0.0</PackageVersion>
+        <PackageVersion>10.0.1</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2025</Copyright>
@@ -35,7 +35,10 @@
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>
-            • Upgraded to .NET 10 support
+            • Added ShellNavigation static API and deprecated Shell extension methods
+            • Improved startup lifecycle handling and view model wiring
+            • Shipped transitive MAUI/toolkit dependencies with .NET 10 baselines
+            • Updated sample usage and documentation
         </PackageReleaseNotes>
         
         <!-- Allow .NET 9 projects to install this package -->
@@ -47,11 +50,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- These are internal dependencies that the consumer is expected to already have in their MAUI project.
-             Setting PrivateAssets="all" ensures they are not included transitively in the consumer's project. -->
-        <PackageReference Include="Microsoft.Maui.Controls" Version="[10.0.20,)" PrivateAssets="all" />
-        <PackageReference Include="CommunityToolkit.Maui" Version="[13.0.0,)" PrivateAssets="all"/>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="[8.4.0,]" PrivateAssets="all" />
+        <!-- Package dependencies required by ShellInject for navigation, bindings, and popups. -->
+        <PackageReference Include="Microsoft.Maui.Controls" Version="[10.0.10,)" />
+        <PackageReference Include="CommunityToolkit.Maui" Version="[13.0.0,)" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="[8.4.0,)" />
     </ItemGroup>
     
     <ItemGroup>

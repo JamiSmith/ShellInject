@@ -9,6 +9,8 @@ namespace Sample.ViewModels;
 
 public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
 {
+    private readonly ISampleService _sampleService = sampleService;
+
     [ObservableProperty] private string _reverseDataText = string.Empty;
 
     public override void OnAppearing()
@@ -28,7 +30,8 @@ public partial class MainViewModel(ISampleService sampleService) : BaseViewModel
 
     public override Task InitializedAsync()
     {
-        return base.InitializedAsync();
+        Debug.WriteLine($"SampleService: {_sampleService.GetMessage()}");
+        return Task.CompletedTask;
     }
 
     public override Task ReverseDataReceivedAsync(object? parameter)
