@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net9.0;net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
-        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+        <TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 
         <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
         <!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -19,7 +19,7 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>9.0.1</PackageVersion>
+        <PackageVersion>10.0.0</PackageVersion>
         <PackageId>ShellInject</PackageId>
         <Authors>Jamie Smith</Authors>
         <Copyright>Jamie Smith 2025</Copyright>
@@ -35,12 +35,7 @@
         <RepositoryType>git</RepositoryType>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>
-            • Upgraded to .NET 9 support
-            • Fixed issues with showing popups via ShowPopupAsync
-            • Fixed ReplaceAsync to reliably trigger DataReceivedAsync
-            • Fixed ChangeTabAsync to support TabbedPages correctly
-            • Resolved dependency issues when installing the package
-            • General bug fixes and improvements
+            • Upgraded to .NET 10 support
         </PackageReleaseNotes>
         
         <!-- Allow .NET 9 projects to install this package -->
@@ -54,9 +49,9 @@
     <ItemGroup>
         <!-- These are internal dependencies that the consumer is expected to already have in their MAUI project.
              Setting PrivateAssets="all" ensures they are not included transitively in the consumer's project. -->
-        <PackageReference Include="Microsoft.Maui.Controls" Version="[9.0.70,)" PrivateAssets="all" />
-        <PackageReference Include="CommunityToolkit.Maui" Version="[12.0.0,)" PrivateAssets="all"/>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="[8.4.0,)" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="[10.0.20,)" PrivateAssets="all" />
+        <PackageReference Include="CommunityToolkit.Maui" Version="[13.0.0,)" PrivateAssets="all"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="[8.4.0,]" PrivateAssets="all" />
     </ItemGroup>
     
     <ItemGroup>
