@@ -1,3 +1,8 @@
+This project has moved to a new location and will be updated/maintained here: https://github.com/scryptfyre/ShellInject
+
+
+
+
 # ShellInject
 
 ShellInject is a .NET MAUI library that makes Shell navigation feel effortless. It provides a clean, typed navigation API, wires ViewModels from XAML, and automatically delivers navigation data and lifecycle events. With a single startup line and a single attached property in XAML, your pages are ready to navigate, receive parameters, and stay lifecycle-aware without manual route registration or boilerplate setup.
