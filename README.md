@@ -2,7 +2,7 @@
 
 
 
-# NOTE: This project has moved to a new location and will be updated/maintained here: https://github.com/scryptfyre/ShellInject
+# NOTICE: This project has moved to a new location and will be updated/maintained here: https://github.com/scryptfyre/ShellInject
 
 #ShellInject
 
